@@ -84,3 +84,7 @@ build-all-protos: prepare-vendor-protos prepare-tx-protos
 	@for filename in ./$(PYTHON_TARGET)/protos/*.py; do \
 	 echo "from event_chain.protos.protos.$$(basename $$filename .py) import *" >>$(PYTHON_TARGET)/protos/__init__.py; \
 	 done
+
+include .makefiles/*.mk
+
+.PHONY: build init travis-init install dep pre-build post-build all test doc precommit travis clean watch run bump-version create-pr

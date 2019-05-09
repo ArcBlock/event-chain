@@ -17,7 +17,7 @@ Developer Setup
         `pip install -r requirements.txt`
  2. install dependencies for forge-event-chain
 
-        `pip install -r examples/event_chain/requirements.txt`
+        `pip install -r requirements.txt`
 
 Quick Setup
 ---
@@ -49,10 +49,7 @@ Before running event_chain, make sure your local forge is running properly.
 1. simulate original data to start with:
 
    `FORGE_CONFIG=/home/User/forge_release.toml python -m event_chain.simulation.simulat`
- 2. start event_chain server:
 
-    `FORGE_CONFIG=/home/User/forge_release.toml python -m event_chain.server.init`
-
-3. start event_chain application:
+2. start event_chain application:
 
    `FORGE_CONFIG=/home/User/forge_release.toml python3 -m event_chain.ec normal`
