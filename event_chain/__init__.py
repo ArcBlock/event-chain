@@ -1,6 +1,4 @@
-from event_chain import app
-from event_chain import protos
-from event_chain import simulation
+from event_chain import application
 
 import logging
 
