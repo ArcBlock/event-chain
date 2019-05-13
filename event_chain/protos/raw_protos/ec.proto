@@ -1,0 +1,12 @@
+syntax = "proto3";
+package forge_abi;
+
+message GeneralTicket {
+    string id = 1;
+    // same as event, fixed
+    string start_time = 2;
+    string end_time = 3;
+    string location = 4;
+    string img_url = 6;
+    string title = 7;
+}

@@ -1,20 +1,32 @@
 TOP_DIR=.
+ENV=~/.envs
 README=$(TOP_DIR)/README.md
 
 VERSION=$(strip $(shell cat version))
-PROTOS=abi enum rpc state service tx type trace_type
-PROTOS=abi enum rpc state service type trace_type
-PYTHON_TARGET=protos
+PYTHON_TARGET=event_chain/protos
 CONFIGS=forge forge_release forge_test forge_default
-TX_PROTOS=account/account_migrate asset/consume_asset asset/create_asset account/declare governance/deploy_protocol trade/exchange misc/poke stake/stake trade/transfer asset/update_asset governance/upgrade_node deprecated/declare_file
 
 build:
 	@echo "Building the software..."
 
-init: install dep
+init: install dep create_env
 	@echo "Initializing the repo..."
+	@git submodule update --init --recursive
 
-travis-init:
+create_env:
+	@pip install virtualenv
+	@pip install virtualenvwrapper
+	( \
+		source /usr/local/bin/virtualenvwrapper.sh; \
+		mkvirtualenv forge-python-sdk; \
+		pip install -r requirements.txt; \
+		pre-commit install; \
+	)
+
+add_precommit_hook:
+	@pre-commit install
+
+travis-init: add_precommit_hook
 	@echo "Initialize software required for travis (normally ubuntu software)"
 
 install:
@@ -36,6 +48,7 @@ test:
 
 lint:
 	@echo "Linting the software..."
+	@python .git/hooks/pre-commit
 
 doc:
 	@echo "Building the documenation..."
@@ -58,24 +71,11 @@ watch:
 run:
 	@echo "Running the software..."
 
-prepare-tx-protos:
-	@echo "Preparing tx protobuf..."
-	@$(foreach proto, $(TX_PROTOS),\
-	 mkdir -p $(PYTHON_TARGET)/raw_protos/$(proto)/;\
-	 curl --silent https://$(GITHUB_TOKEN)@raw.githubusercontent.com/ArcBlock/forge-core-protocols/master/lib/$(proto)/protocol.proto > ./$(PYTHON_TARGET)/raw_protos/$(proto).proto;\
-	 mv $(PYTHON_TARGET)/raw_protos/$(proto).proto $(PYTHON_TARGET)/raw_protos/;\
-	 rm -rf $(PYTHON_TARGET)/raw_protos/$(proto).proto;)
-	@find $(PYTHON_TARGET) -type d -empty -delete
-	@echo "All tx protobufs are fetched!"
+check-style:
+	@flake8 event_chain/application test
 
-prepare-vendor-protos:prepare-tx-protos
-	@mkdir -p $(PYTHON_TARGET)/protos;mkdir -p $(PYTHON_TARGET)/raw_protos
-	@echo "Preparing all protobuf..."
-	@$(foreach proto, $(PROTOS), curl --silent https://$(GITHUB_TOKEN)@raw.githubusercontent.com/ArcBlock/forge-abi/master/lib/protobuf/$(proto).proto > ./$(PYTHON_TARGET)/raw_protos/$(proto).proto;)
-	@curl --silent https://raw.githubusercontent.com/ArcBlock/ex-abci-proto/master/lib/protos/vendor.proto > ./$(PYTHON_TARGET)/raw_protos/vendor.proto
-	@echo "All protobuf files are fetched!"
-
-build-all-protos: prepare-vendor-protos prepare-tx-protos
+build-all-protos:
+	@rm -r $(PYTHON_TARGET)/protos
 	@mkdir -p $(PYTHON_TARGET)/protos;mkdir -p $(PYTHON_TARGET)/raw_protos
 	@echo "Buiding all protobuf files..."
 	@python -m grpc_tools.protoc -I ./$(PYTHON_TARGET)/raw_protos --python_out=./$(PYTHON_TARGET)/protos --grpc_python_out=./$(PYTHON_TARGET)/protos ./$(PYTHON_TARGET)/raw_protos/*.proto

@@ -1,6 +1,6 @@
-from event_chain import app
-from event_chain import protos
-from event_chain import simulation
+# flake8: noqa
+
+from event_chain import application
 
 import logging
 

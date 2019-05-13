@@ -16,7 +16,7 @@ from flask import session
 from google.protobuf.any_pb2 import Any
 from google.protobuf.timestamp_pb2 import Timestamp
 
-from forge_sdk.utils import utils as forge_utils
+from forge_sdk import utils as forge_utils
 
 logger = logging.getLogger('ec-utils')
 
@@ -221,11 +221,6 @@ def base58_encode_tx(tx):
     b = tx.SerializeToString()
     return forge_utils.multibase_b58encode(b)
 
-
-class ForgeTxType(Enum):
-    ACTIVATE_ASSET = 'fg:t:activate_asset'
-    CREATE_ASSET = 'fg:t:create_asset'
-    EXCHANGE = 'fg:t:exchange'
 
 
 def insert_to_sql(db, data):

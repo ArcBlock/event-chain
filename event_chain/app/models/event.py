@@ -8,7 +8,7 @@ from google.protobuf.any_pb2 import Any
 
 from forge_sdk import did
 from forge_sdk import rpc as forge_rpc
-from forge_sdk.utils import utils as forge_utils
+from forge_sdk import utils as forge_utils
 
 logger = logging.getLogger('model-event')
 
