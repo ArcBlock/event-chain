@@ -8,4 +8,5 @@ message GeneralTicket {
     string end_time = 3;
     string location = 4;
     string img_url = 6;
+    string title = 7;
 }

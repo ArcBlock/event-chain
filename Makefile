@@ -71,6 +71,8 @@ watch:
 run:
 	@echo "Running the software..."
 
+check-style:
+	@flake8 event_chain/application test
 
 build-all-protos:
 	@rm -r $(PYTHON_TARGET)/protos

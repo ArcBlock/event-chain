@@ -1,7 +1,11 @@
 import json
+import logging
 
-from forge_sdk import protos as forge_protos, rpc, utils as forge_utils
-from event_chain.application.controllers import logger
+from forge_sdk import rpc, utils as forge_utils
+
+from event_chain.application import utils
+
+logger = logging.getLogger('ec-controller')
 
 
 def create_event_general(wallet, token=None, **kwargs):
@@ -14,7 +18,11 @@ def create_event_general(wallet, token=None, **kwargs):
         'img_url': kwargs.get('img_url')
     })
 
-    factory = forge_protos.AssetFactory(
+    if not rpc.is_template_match_asset(template,
+                                       utils.get_proto('GeneralTicket')):
+        return
+
+    factory = rpc.build_asset_factory(
             allowed_spec_args=['id'],
             asset_name='GeneralTicket',
             template=template,
@@ -28,5 +36,7 @@ def create_event_general(wallet, token=None, **kwargs):
     if forge_utils.is_response_ok(res):
         logger.debug(f'Event hash was received: {res.hash}')
         logger.info(f'Event address: {event_address}')
+        return event_address
     else:
         logger.error(f'Event hash was not generated.')
+        return None

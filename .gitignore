@@ -4,3 +4,6 @@ node_modules
 .DS_Store
 
 test/flask_session
+protocols/event_chain/beams/
+protocols/event_chain/beams/
+protocols/event_chain/beams/

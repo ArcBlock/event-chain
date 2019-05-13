@@ -1,1 +1,3 @@
-from event_chain.application import models
+# flake8: noqa
+
+from event_chain.application.models.states import *

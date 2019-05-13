@@ -1,3 +1,4 @@
-import logging
+# flake8: noqa
 
-logger = logging.getLogger('ec-controller')
+from event_chain.application.controllers.event import *
+from event_chain.application.controllers.ticket import *

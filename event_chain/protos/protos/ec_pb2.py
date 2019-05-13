@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='forge_abi',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x08\x65\x63.proto\x12\tforge_abi\"d\n\rGeneralTicket\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\x12\x10\n\x08location\x18\x04 \x01(\t\x12\x0f\n\x07img_url\x18\x06 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x08\x65\x63.proto\x12\tforge_abi\"s\n\rGeneralTicket\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\x12\x10\n\x08location\x18\x04 \x01(\t\x12\x0f\n\x07img_url\x18\x06 \x01(\t\x12\r\n\x05title\x18\x07 \x01(\tb\x06proto3')
 )
 
 
@@ -67,6 +67,13 @@ _GENERALTICKET = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='title', full_name='forge_abi.GeneralTicket.title', index=5,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -80,7 +87,7 @@ _GENERALTICKET = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=23,
-  serialized_end=123,
+  serialized_end=138,
 )
 
 DESCRIPTOR.message_types_by_name['GeneralTicket'] = _GENERALTICKET
