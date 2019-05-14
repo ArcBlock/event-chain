@@ -4,6 +4,7 @@ import os
 import uuid
 
 from event_chain.application import controllers
+from forge_sdk import utils as forge_utils
 
 logger = logging.getLogger('ec-simulator')
 
