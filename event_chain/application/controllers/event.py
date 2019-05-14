@@ -31,7 +31,7 @@ def create_event_general(wallet, token=None, **kwargs):
             **kwargs,
     )
 
-    res, event_address = rpc.create_asset_factory('general', factory, wallet,
+    res, event_address = rpc.create_asset_factory('general_event', factory, wallet,
                                                   token)
     if forge_utils.is_response_ok(res):
         logger.debug(f'Event hash was received: {res.hash}')
