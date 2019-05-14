@@ -1,6 +1,5 @@
 # flake8: noqa
 
-from event_chain.application.models import *
 import logging
 
 import event_chain.config.config as config

@@ -1,10 +1,9 @@
 import logging
+from datetime import datetime
 
-import event_chain.protos as protos
-from event_chain.app.models.states.account import ParticipantAccountState
+from event_chain import protos
 
 from forge_sdk import rpc as forge_rpc
-from forge_sdk import protos as forge_protos
 
 logger = logging.getLogger('model-admin')
 
@@ -25,7 +24,7 @@ class User:
         logger.debug("address: {}".format(self.address))
 
     def get_wallet(self):
-        wallet = forge_protos.WalletInfo()
+        wallet = protos.WalletInfo()
         wallet.ParseFromString(self.wallet)
         return wallet
 
@@ -48,31 +47,19 @@ class User:
             logger.error(res)
         return res.wallet.SerializeToString(), res.token
 
-    def get_state(self):
-        state = get_participant_state(self.address)
-        return state
 
-    # def poke(self):
-    #     pokeTx = protos.PokeTx(date=str(datetime.utcnow().date()),
-    #                            address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-    #     res = forge_rpc.send_itx(type_url='fg:t:poke',
-    #                              itx=pokeTx,
-    #                              wallet=self.get_wallet(),
-    #                              token=self.token,
-    #                              nonce=0)
-    #
-    #     if res.code != 0:
-    #         logger.error("Poke Failed.")
-    #         logger.error(res)
-    #     else:
-    #         logger.debug('Poke successfully.hash: {}'.format(res.hash))
+    def poke(self):
+        pokeTx = protos.PokeTx(date=str(datetime.utcnow().date()),
+                               address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
+        res = forge_rpc.send_itx(type_url='fg:t:poke',
+                                 itx=pokeTx,
+                                 wallet=self.get_wallet(),
+                                 token=self.token,
+                                 nonce=0)
 
+        if res.code != 0:
+            logger.error("Poke Failed.")
+            logger.error(res)
+        else:
+            logger.debug('Poke successfully.hash: {}'.format(res.hash))
 
-def get_participant_state(participant_address):
-    state = forge_rpc.get_single_account_state(participant_address)
-    if not state:
-        logger.error(
-            "Participant {} doesn't exist.".format(participant_address),
-        )
-    else:
-        return ParticipantAccountState(state)

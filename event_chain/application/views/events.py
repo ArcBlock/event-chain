@@ -1,13 +1,14 @@
 import logging
 
 import requests
-from event_chain.app import controllers
-from event_chain.app import db
-from event_chain.app import models
-from event_chain.app import utils
-from event_chain.app.forms.event import EventForm
-from event_chain.app.models import EventModel
-from event_chain.app.models import ExchangeHashModel
+from event_chain.application import controllers
+from event_chain.application import db
+from event_chain.application import models
+from event_chain.application import utils
+from event_chain.application.forms.event import EventForm
+from event_chain.application.models import EventModel
+from event_chain.application.models import ExchangeHashModel
+from event_chain.application.models import sql
 from event_chain.config import config
 from event_chain.config.config import APP_ADDR
 from event_chain.config.config import APP_PK
@@ -32,7 +33,8 @@ logger = logging.getLogger('view-event')
 @events.route("/all", methods=['GET', 'POST'])
 def all():
     def list_events():
-        addr_list = [model.address for model in EventModel.query.all()]
+        asset_factories = sql.AssetState.query.all(moniker='test_factory')
+        addr_list = [factory.address for factory in asset_factories ]
         event_states = []
         for addr in addr_list:
             state = models.get_event_state(addr)
