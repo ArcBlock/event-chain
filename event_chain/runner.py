@@ -2,8 +2,8 @@ import logging
 import sys
 
 import event_chain.config.config as config
-from event_chain.app import create_app
-from event_chain.app import utils
+from event_chain.application import create_app
+from event_chain.application import utils
 from flask import g
 from flask import redirect
 from flask import url_for
