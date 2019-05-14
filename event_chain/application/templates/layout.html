@@ -27,7 +27,7 @@
             <div class="navbar-brand">
                 <a href="/"><img src="{{ url_for('static', filename='images/eventchain_h_2.png') }}"
                                  style="height: 70px; width: 140px; margin-right: 40px;object-fit:cover;"></a>
-                <a class="navbar-item is-hidden-desktop" href={{ url_for('tickets.all') }}>
+                <a class="navbar-item is-hidden-desktop" href={{ url_for('events.all') }}>
                     My Account
                 </a>
             </div>
@@ -36,10 +36,10 @@
                     <a class="navbar-item" href="/">
                         Event List
                     </a>
-                    <a class="navbar-item" href={{ url_for('events.create')}}>
+                    <a class="navbar-item" href={{ url_for('events.all')}}>
                         Create an Event
                     </a>
-                    <a class="navbar-item" href={{ url_for('tickets.all') }}>
+                    <a class="navbar-item" href={{ url_for('events.all') }}>
                         My Account
                     </a>
 

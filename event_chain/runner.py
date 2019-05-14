@@ -24,8 +24,11 @@ def home():
 
 @application.context_processor
 def inject_poke_url():
+    # poke_url = utils.gen_did_url(
+    #     f'{config.SERVER_ADDRESS}{url_for("api_mobile.poke")}',
+    #     'RequestAuth')
     poke_url = utils.gen_did_url(
-        f'{config.SERVER_ADDRESS}{url_for("api_mobile.poke")}',
+        f'placeholder',
         'RequestAuth')
     return dict(poke_url=poke_url)
 

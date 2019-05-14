@@ -18,7 +18,7 @@ class Tx(db.Model):
     sender = db.Column(db.String(40), nullable=False)
     time = db.Column(db.String(64), nullable=False)
     type = db.Column(db.String(20), nullable=False)
-    code = db.Column(db.Integer(2), nullable=False)
+    code = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f'<Tx {self.hash}>'
