@@ -21,8 +21,8 @@
                 <div class="card-image">
                   <figure class="image is-16by9">
                     <a href={{ url_for('events.detail',address=event.address) }}>
-                      <img src={{ event.event_info.img_url }}
-                           alt="{{ event.event_info.title }}"/>
+                      <img src={{ event.img_url }}
+                           alt="{{ event.title }}"/>
                     </a>
                   </figure>
                 </div>
@@ -30,28 +30,28 @@
                   <div class="content">
                     <h2 class="subtitle strong">
                       <a style="color:#404040;"
-                         href={{ url_for('events.detail',address=event.address) }}>{{ event.event_info.title }}</a>
+                         href={{ url_for('events.detail',address=event.address) }}>{{ event.title }}</a>
                     </h2>
                     <p>
                         <span class="icon is-small is-left">
                           <i class="fa fa-map-marker" style="margin-right:3px;"></i>
-                        </span> {{ event.event_info.location }}</p>
+                        </span> {{ event.location }}</p>
                     <p>
                         <span class="icon is-small is-left">
                           <i class="fa fa-calendar" style="margin-right:3px;"></i>
-                        </span> {{ event.display_start_time }}</p>
+                        </span> {{ event.start_time }}</p>
                     <hr>
                     <nav class="level">
                       <div class="level-item has-text-centered">
                         <div>
                           <p class="heading">Tickets</p>
-                          <p class="title">{{ event.event_info.remaining }}/{{ event.event_info.total }}</p>
+                          <p class="title">{{ event.limit-event.num_created }}/{{ event.limit }}</p>
                         </div>
                       </div>
                       <div class="level-item has-text-centered">
                         <div>
                           <p class="heading">Price</p>
-                          <p class="title">{{ event.display_price }} TBA</p>
+                          <p class="title">{{ to_price(event.price) }} TBA</p>
                         </div>
                       </div>
                     </nav>

@@ -3,7 +3,7 @@ import logging
 import os
 import uuid
 
-from event_chain.application import controllers
+from event_chain.app import controllers
 
 logger = logging.getLogger('ec-simulator')
 

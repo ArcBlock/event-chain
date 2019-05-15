@@ -3,7 +3,7 @@ import json
 import logging
 
 import base58
-import event_chain.protos as protos
+from forge_sdk import protos as forge_protos
 
 from forge_sdk import utils as forge_utils
 
@@ -45,7 +45,7 @@ class WalletResponse:
             "Wallet Response:origin tx before decode: {}".format(origin),
         )
         decoded = base58.b58decode(origin[1:])
-        tx = protos.Transaction()
+        tx = forge_protos.Transaction()
         tx.ParseFromString(decoded)
         logger.debug(
             "Wallet Response:origin tx after base58 decode: {}".format(tx),

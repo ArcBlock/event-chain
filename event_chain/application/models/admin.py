@@ -1,15 +1,14 @@
 import logging
-from datetime import datetime
-
-from event_chain import protos
 
 from forge_sdk import rpc as forge_rpc
+
+from event_chain import protos
 
 logger = logging.getLogger('model-admin')
 
 
 class User:
-    def __init__(self, moniker, passphrase, address=None, data=None):
+    def __init__(self, moniker, passphrase, address=None):
         self.moniker = moniker
         self.passphrase = passphrase
         if address:
@@ -47,15 +46,9 @@ class User:
             logger.error(res)
         return res.wallet.SerializeToString(), res.token
 
-
     def poke(self):
-        pokeTx = protos.PokeTx(date=str(datetime.utcnow().date()),
-                               address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-        res = forge_rpc.send_itx(type_url='fg:t:poke',
-                                 itx=pokeTx,
-                                 wallet=self.get_wallet(),
-                                 token=self.token,
-                                 nonce=0)
+        res = forge_rpc.poke(wallet=self.get_wallet(),
+                             token=self.token)
 
         if res.code != 0:
             logger.error("Poke Failed.")
@@ -63,3 +56,11 @@ class User:
         else:
             logger.debug('Poke successfully.hash: {}'.format(res.hash))
 
+
+class Wallet:
+    def __init__(self, address, pk, sk=None, token=None, did=None):
+        self.address = address
+        self.pk = pk
+        self.sk = sk
+        self.token = token
+        self.did = did

@@ -18,7 +18,7 @@ tickets = Blueprint(
 def all():
     if not session.get('user'):
         return redirect(url_for('admin.login'))
-    tickets = controllers.list_unused_tickets(session.get('user').address)
+    tickets = []
     num_tickets = len(tickets)
     user = models.get_participant_state(session.get('user').address)
     events = get_event_for_ticket(tickets)

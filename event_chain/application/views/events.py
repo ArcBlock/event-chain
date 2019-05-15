@@ -1,28 +1,18 @@
 import logging
 
-import requests
-from event_chain.application import controllers
-from event_chain.application import db
+from flask import Blueprint
+from flask import render_template
+from flask import session
+from forge_sdk import utils as forge_utils
+
 from event_chain.application import models
 from event_chain.application import utils
-from event_chain.application.forms.event import EventForm
 from event_chain.application.models import sql
-from event_chain.config import config
-from event_chain.config.config import APP_ADDR
-from event_chain.config.config import APP_PK
-from event_chain.config.config import ARC
-from event_chain.config.config import SERVER_ADDRESS
-from flask import Blueprint
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import session
-from flask import url_for
 
 events = Blueprint(
-    'events',
-    __name__,
-    template_folder='templates',
+        'events',
+        __name__,
+        template_folder='templates',
 )
 
 logger = logging.getLogger('view-event')
@@ -31,7 +21,8 @@ logger = logging.getLogger('view-event')
 @events.route("/all", methods=['GET', 'POST'])
 def all():
     def list_events():
-        asset_factories = sql.AssetState.query.filter_by(moniker='general_event').all()
+        asset_factories = sql.AssetState.query.filter_by(
+            moniker='general_event').all()
         addr_list = [factory.address for factory in asset_factories]
         event_states = []
         for addr in addr_list:
@@ -43,11 +34,13 @@ def all():
     all_events = list_events()
     event_lists = utils.chunks(all_events, 3)
 
-    return render_template(
-        'events/event_list.html', event_lists=event_lists,
-        session=session, number=len(all_events)
-    )
+    def to_price(biguint):
+        return forge_utils.unit_to_token(forge_utils.biguint_to_int(biguint))
 
+    return render_template(
+            'events/event_list.html', event_lists=event_lists,
+            session=session, number=len(all_events), to_price=to_price
+    )
 
 # @events.route("/detail/<address>", methods=['GET', 'POST'])
 # def detail(address):

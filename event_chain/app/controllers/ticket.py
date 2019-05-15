@@ -1,44 +1,34 @@
 import logging
-from datetime import datetime
+
+from forge_sdk import did as forge_did, rpc as forge_rpc
+from forge_sdk import utils as forge_utils
 
 from event_chain import protos
-from event_chain.app import db
 from event_chain.app import models
-from event_chain.app import utils
-from event_chain.config import config
-
-from forge_sdk import rpc as forge_rpc
-from forge_sdk import utils as forge_utils
 
 logger = logging.getLogger('controller-ticket')
 
 
-def list_unused_tickets(user_address):
-    user_state = models.get_participant_state(user_address)
-    if not user_state:
-        return []
+def buy_tickets_general(event_address, num, wallet, token=None):
+    spec_datas = []
+    for i in range(0, num):
+        spec_datas.append({'id': forge_did.AbtDid(role_type='asset').new()})
+
+    res, tickets = forge_rpc.acquire_asset(to=event_address, spec_datas=spec_datas,
+                                     type_url='ec:s:general_ticket',proto_lib= protos, wallet=wallet,
+                                     token=token)
+    if forge_utils.is_response_ok(res):
+        return tickets
     else:
-        addr_list = user_state.unused
-        ticket_states = [
-            models.get_ticket_state(addr) for addr in addr_list if
-            models.get_ticket_state(addr) is not None
-        ]
-        return ticket_states
+        logger.error(f"Fail to buy tickets for event {event_address}")
 
 
-def buy_ticket(event_address, user, conn=None):
-    event_asset = models.get_event_state(event_address)
-    logger.debug('user wallet: {}'.format(user.get_wallet()))
-    logger.debug('user token: {}'.format(user.token))
-    exchange_hash = event_asset.buy_ticket(
-        user.get_wallet(), user.token,
-    )
-    logger.debug("Buy ticket process is completed. exchange hash{}".format(
-        exchange_hash,
-    ))
-    if exchange_hash and conn:
-        db.insert_exchange_tx(conn, event_address, exchange_hash)
-    return exchange_hash
+def buy_ticket(event_address, user):
+    logger.debug(f'user wallet: {user.get_wallet()}')
+    ticket_address = buy_tickets_general(event_address, 1,
+                                        user.get_wallet(), user.token)
+    logger.debug(f"Buy ticket process is completed. ticket {ticket_address}")
+    return ticket_address
 
 
 def consume(ticket_address, user):
@@ -75,12 +65,4 @@ def verify_ticket_address(ticket_address):
     if not state:
         logger.error(u'Ticket {} does not exist.'.format(ticket_address))
         raise ValueError('Ticket {} does not exist'.format(ticket_address))
-    if state.type_url != 'ec:s:ticket_info':
-        logger.error('This asset type should be ec:s:ticket_info,'
-                     ' but the provided url is: {}'.format(state.type_url))
-        raise ValueError(
-            '{} is not a valid ticket address. Type_url for this asset '
-            'is {}'.format(
-                ticket_address, state.type_url,
-            ),
-        )
+

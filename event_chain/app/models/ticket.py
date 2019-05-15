@@ -12,4 +12,4 @@ def get_ticket_state(ticket_address):
     if not state:
         logger.error("Ticket {} doesn't exist.".format(ticket_address))
     else:
-        return TicketAssetState(state)
+        return state
