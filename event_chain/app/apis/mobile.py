@@ -3,16 +3,18 @@ import json
 import logging
 
 from event_chain.app import controllers
-from event_chain.app import db
 from event_chain.app import models
 from event_chain.app import utils
+from event_chain import protos
+import uuid
 from event_chain.config import config
 from flask import Blueprint
 from flask import request
 from flask import Response
 from flask import url_for
 
-from forge_sdk import utils as forge_utils
+from forge_sdk import utils as forge_utils, rpc as forge_rpc
+from forge_sdk import protos as forge_protos
 
 logger = logging.getLogger('api-mobile')
 
@@ -43,27 +45,28 @@ def buy_ticket(event_address):
                 "user address parsed from request {}".format(user_address),
             )
 
-            event = models.get_event_state(event_address)
+            event = models.get_event_factory(event_address)
             updated_exchange_tx = utils.update_tx_multisig(
                 event.get_exchange_tx(),
                 user_address,
                 user_pk
             )
-            logger.debug('new tx {}:'.format(updated_exchange_tx))
-            call_back_url = config.SERVER_ADDRESS + url_for(
-                'api_mobile.buy_ticket', event_address=event_address)
-            des = 'Confirm the purchase below.'
+            acquire_asset_tx = forge_rpc.build_acquire_asset_tx(to=event_address,
+                                                                 spec_datas=[{"id":str(uuid.uuid4())}],
+                                                                type_url='ec:s:general_ticket', proto_lib=protos)
+            logger.debug(f'acquire_asset_tx {acquire_asset_tx}')
 
             did_request_params = {
                 'user_did': user_did,
                 'tx': updated_exchange_tx,
-                'url': call_back_url,
-                'description': des,
+                'url': config.SERVER_ADDRESS + url_for('api_mobile.buy_ticket', event_address=event_address),
+                'description': 'Confirm the purchase below.',
                 'action': 'responseAuth',
                 'workflow': 'buy-ticket',
             }
+
             response = controllers.require_sig(**did_request_params)
-            logger.debug('did auth response: {}'.format(response))
+            logger.debug(f'did auth response: {response}')
             return response
 
         elif request.method == 'POST':
@@ -71,7 +74,7 @@ def buy_ticket(event_address):
             try:
                 req_data = request.get_data(as_text=True)
                 logger.debug("Receives data from wallet {}".format(req_data))
-                req = ast.literal_eval(req_data)
+                req = json.loads(req_data)
                 wallet_response = models.WalletResponse(req)
             except Exception as e:
                 logger.error(e, exc_info=True)
@@ -84,22 +87,17 @@ def buy_ticket(event_address):
                     "user {} doesn't exist.".format(user_address))
 
             ticket_address, hash = controllers.buy_ticket_mobile(
-                event_address,
-                user_address,
+                wallet_response.get_origin_tx(),
                 wallet_response.get_signature(),
-                wallet_response.get_user_pk(),
             )
+            tx = wallet_response.get_origin_tx().__deepcopy__()
+            tx.signature = wallet_response.get_signature()
 
             if ticket_address and hash:
                 logger.info("Ticket {} is bought successfully "
                             "by mobile.".format(ticket_address))
                 base58_encoded = utils.base58_encode_tx(
-                    utils.update_tx_multisig(
-                        models.get_event_state(
-                            event_address).get_exchange_tx(),
-                        user_address,
-                        wallet_response.get_user_pk(),
-                    ))
+                    tx.SerializeToString())
                 js = json.dumps({'ticket': ticket_address,
                                  'hash': hash,
                                  'tx': base58_encoded})

@@ -3,7 +3,7 @@ import logging
 
 from forge_sdk import rpc, utils as forge_utils
 
-from event_chain.application import utils
+from event_chain.app import utils
 
 logger = logging.getLogger('ec-controller')
 

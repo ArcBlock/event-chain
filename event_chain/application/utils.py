@@ -46,6 +46,7 @@ def flash_errors(form):
                     error), 'error',
             )
 
+
 def gen_did_url(url, action):
     params = {
         'appPk': APP_PK,
@@ -54,9 +55,9 @@ def gen_did_url(url, action):
         'url': url,
     }
     r = requests.Request('GET', ARC, params=params).prepare()
-    logger.debug(
-        "callback url for DID call. {}".format(
-            url,
-        ),
-    )
+    logger.debug(f"callback url for DID call. {url}")
     return r.url
+
+def response_error(msg):
+    error = json.dumps({'error': msg})
+    return Response(error, status=400, mimetype='application/json')

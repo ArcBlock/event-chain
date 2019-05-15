@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 
-from event_chain import protos
 from event_chain.app import db
 from event_chain.app import models
 from event_chain.app import utils
@@ -9,20 +8,24 @@ from event_chain.config import config
 
 from forge_sdk import rpc as forge_rpc
 from forge_sdk import utils as forge_utils
+from forge_sdk import protos as forge_protos
 
 logger = logging.getLogger('controller-mobile')
 
 
-def buy_ticket_mobile(event_address, address, signature, user_pk):
-    state = models.get_event_state(event_address)
-    ticket_address, hash = state.buy_ticket_mobile(
-        address, signature, user_pk
-    )
-    if hash:
-        utils.insert_to_sql(db, models.ExchangeHashModel(
-            event_address=event_address,
-            hash=hash))
-    return ticket_address, hash
+def buy_ticket_mobile(tx, signature):
+
+    acquire_asset_tx = forge_utils.parse_to_proto(tx.itx.value,
+                                                  forge_protos.AcquireAssetTx)
+
+    tx.signature = signature
+
+    ticket_address = acquire_asset_tx.specs[0].address
+    res = forge_rpc.send(tx)
+    if forge_utils.is_response_ok(res):
+        return ticket_address, hash
+    else:
+        return None, None
 
 
 def consume_ticket_mobile(ticket, consume_tx, address, signature, user_pk):
@@ -41,7 +44,7 @@ def consume_ticket_mobile(ticket, consume_tx, address, signature, user_pk):
 
 
 def gen_poke_tx(address, pk):
-    poke_itx = protos.PokeTx(
+    poke_itx = forge_protos.PokeTx(
         date=str(
             datetime.now().date()),
         address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
@@ -54,7 +57,7 @@ def gen_poke_tx(address, pk):
         'pk': pk,
         'itx': itx
     }
-    return protos.Transaction(**params)
+    return forge_protos.Transaction(**params)
 
 
 def send_poke_tx(poke_tx, signature):

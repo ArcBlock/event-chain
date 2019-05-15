@@ -2,8 +2,8 @@ import logging
 import sys
 
 import event_chain.config.config as config
-from event_chain.application import create_app
-from event_chain.application import utils
+from event_chain.app import create_app
+from event_chain.app import utils
 from flask import g
 from flask import redirect
 from flask import url_for
@@ -24,11 +24,8 @@ def home():
 
 @application.context_processor
 def inject_poke_url():
-    # poke_url = utils.gen_did_url(
-    #     f'{config.SERVER_ADDRESS}{url_for("api_mobile.poke")}',
-    #     'RequestAuth')
     poke_url = utils.gen_did_url(
-        f'placeholder',
+        f'{config.SERVER_ADDRESS}{url_for("api_mobile.poke")}',
         'RequestAuth')
     return dict(poke_url=poke_url)
 
