@@ -3,6 +3,7 @@ import logging
 from forge_sdk import rpc as forge_rpc, protos as forge_protos
 
 from event_chain import protos
+from forge_sdk import utils as forge_utils
 from event_chain.app.models.states.account import ParticipantAccountState
 
 logger = logging.getLogger('model-admin')
@@ -55,12 +56,15 @@ class User:
 
 
 class Wallet:
-    def __init__(self, address, pk, sk=None, token=None, did=None):
+    def __init__(self, pk, address=None, sk=None, token=None, did=None):
         self.address = address
-        self.pk = pk
+        self.pk = forge_utils.multibase_b58decode(pk)
         self.sk = sk
         self.token = token
         self.did = did
+
+        if self.did:
+            self.address = self.did.split(":")[2]
 
 
 def get_participant_state(address):

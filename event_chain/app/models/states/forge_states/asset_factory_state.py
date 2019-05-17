@@ -1,7 +1,7 @@
 
 from forge_sdk import protos, utils as forge_utils
 
-from event_chain.application.models.states.forge_states.asset_state import AssetState
+from event_chain.app.models.states.forge_states.asset_state import AssetState
 
 
 class AssetFactoryState(AssetState):

@@ -10,3 +10,8 @@ message GeneralTicket {
     string img_url = 6;
     string title=7;
 }
+
+message EventInfo {
+    string details = 1;
+    bytes consume_asset_tx = 2;
+}

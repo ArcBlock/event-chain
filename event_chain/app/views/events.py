@@ -76,8 +76,7 @@ def detail(address):
         consume_url = gen_consume_url(address)
         logger.info("Url for mobile consume ticket: {}".format(consume_url))
 
-        # txs = list_event_exchange_txs(address)
-        txs=[]
+        txs = controllers.list_acquire_asset_txs(address)
         num_txs = len(txs)
         tx_lists = utils.chunks(txs, 3)
         logger.debug('forgeweb:{}'.format(forge_web))

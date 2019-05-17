@@ -5,5 +5,9 @@ node_modules
 **/flask_session/
 test/flask_session
 protocols/event_chain/beams/
-protocols/event_chain/beams/
-protocols/event_chain/beams/
+protocols/event_chain/pipe/
+protocols/event_chain/proto/
+
+build/
+dist/
+forge_event_chain.egg-info/

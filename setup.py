@@ -3,9 +3,13 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("version", "r") as v:
+    content = v.read()
+    version = content.rstrip()
+
 setuptools.setup(
     name="forge-event-chain",
-    version="0.18.23",
+    version=version,
     author="Riley Shu",
     author_email="riley@arcblock.io",
     description="A small example package",
@@ -37,7 +41,7 @@ setuptools.setup(
         'Flask-Testing==0.7.1',
         'Flask-WTF==0.14.2',
         'flask-googlemaps',
-        'forge-python-sdk==0.18.17',
+        'forge-python-sdk',
         'requests',
         'click==6.7',
     ],

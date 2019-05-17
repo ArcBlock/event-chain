@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='forge_abi',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x08\x65\x63.proto\x12\tforge_abi\"s\n\rGeneralTicket\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\x12\x10\n\x08location\x18\x04 \x01(\t\x12\x0f\n\x07img_url\x18\x06 \x01(\t\x12\r\n\x05title\x18\x07 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x08\x65\x63.proto\x12\tforge_abi\"s\n\rGeneralTicket\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\nstart_time\x18\x02 \x01(\t\x12\x10\n\x08\x65nd_time\x18\x03 \x01(\t\x12\x10\n\x08location\x18\x04 \x01(\t\x12\x0f\n\x07img_url\x18\x06 \x01(\t\x12\r\n\x05title\x18\x07 \x01(\t\"6\n\tEventInfo\x12\x0f\n\x07\x64\x65tails\x18\x01 \x01(\t\x12\x18\n\x10\x63onsume_asset_tx\x18\x02 \x01(\x0c\x62\x06proto3')
 )
 
 
@@ -90,7 +90,46 @@ _GENERALTICKET = _descriptor.Descriptor(
   serialized_end=138,
 )
 
+
+_EVENTINFO = _descriptor.Descriptor(
+  name='EventInfo',
+  full_name='forge_abi.EventInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='details', full_name='forge_abi.EventInfo.details', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='consume_asset_tx', full_name='forge_abi.EventInfo.consume_asset_tx', index=1,
+      number=2, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b(""),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=140,
+  serialized_end=194,
+)
+
 DESCRIPTOR.message_types_by_name['GeneralTicket'] = _GENERALTICKET
+DESCRIPTOR.message_types_by_name['EventInfo'] = _EVENTINFO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 GeneralTicket = _reflection.GeneratedProtocolMessageType('GeneralTicket', (_message.Message,), dict(
@@ -99,6 +138,13 @@ GeneralTicket = _reflection.GeneratedProtocolMessageType('GeneralTicket', (_mess
   # @@protoc_insertion_point(class_scope:forge_abi.GeneralTicket)
   ))
 _sym_db.RegisterMessage(GeneralTicket)
+
+EventInfo = _reflection.GeneratedProtocolMessageType('EventInfo', (_message.Message,), dict(
+  DESCRIPTOR = _EVENTINFO,
+  __module__ = 'ec_pb2'
+  # @@protoc_insertion_point(class_scope:forge_abi.EventInfo)
+  ))
+_sym_db.RegisterMessage(EventInfo)
 
 
 # @@protoc_insertion_point(module_scope)
