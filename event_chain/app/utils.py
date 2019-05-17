@@ -17,6 +17,7 @@ from event_chain.config.config import APP_PK
 from event_chain.config.config import APP_SK
 from event_chain.config.config import ARC
 
+
 logger = logging.getLogger('ec-utils')
 
 
@@ -94,11 +95,7 @@ def gen_did_url(url, action):
         'url': url,
     }
     r = requests.Request('GET', ARC, params=params).prepare()
-    logger.debug(
-            "callback url for DID call. {}".format(
-                    url,
-            ),
-    )
+
     return r.url
 
 
@@ -230,6 +227,4 @@ def base58_encode_tx(tx):
     return forge_utils.multibase_b58encode(b)
 
 
-def insert_to_sql(db, data):
-    db.session.add(data)
-    db.session.commit()
+
