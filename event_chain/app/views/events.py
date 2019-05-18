@@ -6,8 +6,6 @@ from event_chain.app import db
 from event_chain.app import models
 from event_chain.app import utils
 from event_chain.app.forms.event import EventForm
-from event_chain.app.models import EventModel
-from event_chain.app.models import ExchangeHashModel
 from event_chain.config import config
 from event_chain.config.config import APP_ADDR
 from event_chain.config.config import APP_PK
@@ -19,6 +17,11 @@ from flask import render_template
 from flask import request
 from flask import session
 from flask import url_for
+from forge_sdk import utils as forge_utils
+
+from event_chain.app import models
+from event_chain.app import utils
+from event_chain.app.models import sql
 
 events = Blueprint(
     'events',
@@ -29,13 +32,18 @@ events = Blueprint(
 logger = logging.getLogger('view-event')
 
 
+def to_price(biguint):
+    return forge_utils.unit_to_token(forge_utils.biguint_to_int(biguint))
+
 @events.route("/all", methods=['GET', 'POST'])
 def all():
     def list_events():
-        addr_list = [model.address for model in EventModel.query.all()]
+        asset_factories = sql.AssetState.query.filter_by(
+            moniker='general_event').all()
+        addr_list = [factory.address for factory in asset_factories]
         event_states = []
         for addr in addr_list:
-            state = models.get_event_state(addr)
+            state = models.get_event_factory(addr)
             if state:
                 event_states.append(state)
         return event_states
@@ -44,8 +52,8 @@ def all():
     event_lists = utils.chunks(all_events, 3)
 
     return render_template(
-        'events/event_list.html', event_lists=event_lists,
-        session=session, number=len(all_events)
+            'events/event_list.html', event_lists=event_lists,
+            session=session, number=len(all_events), to_price=to_price
     )
 
 
@@ -58,7 +66,7 @@ def detail(address):
         config.app_host, config.forge_port
     )
 
-    event = models.get_event_state(address)
+    event = models.get_event_factory(address)
     host = models.get_participant_state(event.owner)
     form = EventForm()
     if is_loggedin():
@@ -68,7 +76,7 @@ def detail(address):
         consume_url = gen_consume_url(address)
         logger.info("Url for mobile consume ticket: {}".format(consume_url))
 
-        txs = list_event_exchange_txs(address)
+        txs = controllers.list_acquire_asset_txs(address)
         num_txs = len(txs)
         tx_lists = utils.chunks(txs, 3)
         logger.debug('forgeweb:{}'.format(forge_web))
@@ -76,7 +84,8 @@ def detail(address):
             'events/event_details.html', **locals(),
             to_display_time=utils.to_display_time,
             shorten_hash=utils.shorten_hash,
-            to_short_time=utils.to_short_time
+            to_short_time=utils.to_short_time,
+            to_price=to_price
         )
     return redirect(url_for('admin.login'))
 
@@ -113,15 +122,15 @@ def create():
     return render_template('events/event_create.html', form=form)
 
 
-def list_event_exchange_txs(event_address):
-    hashes = [[model.hash for model in ExchangeHashModel.query.filter(
-        ExchangeHashModel.event_address == event_address)]]
-    tx_list = []
-    for hash in hashes:
-        tx = controllers.get_tx_info(hash)
-        if tx:
-            tx_list.append(tx)
-    return tx_list
+# def list_event_exchange_txs(event_address):
+#     hashes = [[model.hash for model in ExchangeHashModel.query.filter(
+#         ExchangeHashModel.event_address == event_address)]]
+#     tx_list = []
+#     for hash in hashes:
+#         tx = controllers.get_tx_info(hash)
+#         if tx:
+#             tx_list.append(tx)
+#     return tx_list
 
 
 def is_loggedin():

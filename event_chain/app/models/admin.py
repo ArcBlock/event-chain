@@ -1,28 +1,24 @@
 import logging
 
-import event_chain.protos as protos
-from event_chain.app.models.states.account import ParticipantAccountState
+from forge_sdk import rpc as forge_rpc, protos as forge_protos
 
-from forge_sdk import rpc as forge_rpc
-from forge_sdk import protos as forge_protos
+from event_chain import protos
+from forge_sdk import utils as forge_utils
+from event_chain.app.models.states.account import ParticipantAccountState
 
 logger = logging.getLogger('model-admin')
 
 
 class User:
-    def __init__(self, moniker, passphrase, address=None, data=None):
+    def __init__(self, moniker, passphrase, address=None):
         self.moniker = moniker
         self.passphrase = passphrase
         if address:
-            logger.debug("Loading wallet for {}".format(moniker))
             self.wallet, self.token = self.__load_wallet(address, passphrase)
             self.address = address
         else:
             logger.debug("creating wallet for {}".format(moniker))
             self.address, self.wallet, self.token = self.__init_wallet()
-        logger.debug("wallet: {}".format(self.wallet))
-        logger.debug("token: {}".format(self.token))
-        logger.debug("address: {}".format(self.address))
 
     def get_wallet(self):
         wallet = forge_protos.WalletInfo()
@@ -48,31 +44,30 @@ class User:
             logger.error(res)
         return res.wallet.SerializeToString(), res.token
 
-    def get_state(self):
-        state = get_participant_state(self.address)
-        return state
+    def poke(self):
+        res = forge_rpc.poke(wallet=self.get_wallet(),
+                             token=self.token)
 
-    # def poke(self):
-    #     pokeTx = protos.PokeTx(date=str(datetime.utcnow().date()),
-    #                            address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-    #     res = forge_rpc.send_itx(type_url='fg:t:poke',
-    #                              itx=pokeTx,
-    #                              wallet=self.get_wallet(),
-    #                              token=self.token,
-    #                              nonce=0)
-    #
-    #     if res.code != 0:
-    #         logger.error("Poke Failed.")
-    #         logger.error(res)
-    #     else:
-    #         logger.debug('Poke successfully.hash: {}'.format(res.hash))
+        if res.code != 0:
+            logger.error("Poke Failed.")
+            logger.error(res)
+        else:
+            logger.debug('Poke successfully.hash: {}'.format(res.hash))
 
 
-def get_participant_state(participant_address):
-    state = forge_rpc.get_single_account_state(participant_address)
-    if not state:
-        logger.error(
-            "Participant {} doesn't exist.".format(participant_address),
-        )
-    else:
+class Wallet:
+    def __init__(self, pk, address=None, sk=None, token=None, did=None):
+        self.address = address
+        self.pk = forge_utils.multibase_b58decode(pk)
+        self.sk = sk
+        self.token = token
+        self.did = did
+
+        if self.did:
+            self.address = self.did.split(":")[2]
+
+
+def get_participant_state(address):
+    state = forge_rpc.get_single_account_state(address)
+    if state:
         return ParticipantAccountState(state)

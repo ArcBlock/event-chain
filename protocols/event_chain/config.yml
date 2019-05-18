@@ -1,11 +1,12 @@
 ---
-name: generalTicket
-version: 3
+name: event_chain
+version: 1
 namespace: CoreTx
-description: general ticket info for eventchain
+description: protocol information for eventchain
 proto: protocol.proto
 type_urls:
   ec:s:general_ticket: ForgeAbi.GeneralTicket
+  ec:s:event_info: ForgeAbi.EventInfo
 pipeline: protocol.yml
 sources: []
 

@@ -26,7 +26,7 @@ def buy():
     utils.refresh_token()
     form = forms.EventForm()
     address = form.address.data
-    event = models.get_event_state(address)
+    event = models.get_event_factory(address)
 
     error = utils.verify_event(address)
     if error:
@@ -38,14 +38,11 @@ def buy():
         flash('Oops! Someone is faster than you. Get another ticket!')
         return redirect('/')
     else:
-        db.session.add(models.ExchangeHashModel(event_address=address,
-                                                hash=hash))
-        db.session.commit()
         logger.info("ticket is bought successfully from web.")
         flash(
             'Congratulations! Ticket for Event "{}" is bought '
             'successfully!'.format(
-                event.event_info.title), category='info')
+                event.title), category='info')
     return redirect(url_for('tickets.all'))
 
 
