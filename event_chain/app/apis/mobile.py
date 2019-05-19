@@ -86,21 +86,19 @@ def buy_ticket(event_address):
                 return utils.response_error(
                         "user {} doesn't exist.".format(user_address))
 
-            ticket_address, hash = controllers.buy_ticket_mobile(
+            ticket_address, tx_hash = controllers.buy_ticket_mobile(
                     wallet_response.get_origin_tx(),
                     wallet_response.get_signature(),
             )
             tx = wallet_response.get_origin_tx().__deepcopy__()
             tx.signature = wallet_response.get_signature()
 
-            if ticket_address and hash:
+            if ticket_address and tx_hash:
                 logger.info("Ticket {} is bought successfully "
                             "by mobile.".format(ticket_address))
-                base58_encoded = forge_utils.multibase_b58encode(
-                        tx.SerializeToString())
                 js = json.dumps({'ticket': ticket_address,
-                                 'hash': hash,
-                                 'tx': base58_encoded})
+                                 'hash': tx_hash,
+                                 'tx': utils.base58_encode_tx(tx)})
                 logger.debug('success response: {}'.format(str(js)))
                 resp = Response(js, status=200, mimetype='application/json')
                 return resp
