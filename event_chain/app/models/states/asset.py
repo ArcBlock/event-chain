@@ -58,7 +58,6 @@ class TicketAssetState:
             ),
         )
         logger.debug("ticket state about to update...")
-        logger.debug("ticket_info state: {}".format(ticket_info))
         logger.debug("state: {}".format(state))
         return state
 

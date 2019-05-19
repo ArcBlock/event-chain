@@ -3,6 +3,7 @@ class AssetState:
         self.address = asset_state.address
         self.owner = asset_state.owner
         self.moniker = asset_state.moniker
+        self.parent = asset_state.parent
         self.readonly = asset_state.readonly
         self.transferrable = asset_state.transferrable
         self.ttl = asset_state.ttl

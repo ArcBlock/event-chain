@@ -9,7 +9,7 @@ with open("version", "r") as v:
 
 setuptools.setup(
     name="forge-event-chain",
-    version=version,
+    version="0.26.10",
     author="Riley Shu",
     author_email="riley@arcblock.io",
     description="A small example package",

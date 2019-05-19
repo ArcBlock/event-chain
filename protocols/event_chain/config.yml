@@ -1,6 +1,7 @@
 ---
 name: event_chain
 version: 1
+tags: []
 namespace: CoreTx
 description: protocol information for eventchain
 proto: protocol.proto

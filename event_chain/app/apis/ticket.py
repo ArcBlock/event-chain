@@ -1,7 +1,6 @@
 import logging
 
 from event_chain.app import controllers
-from event_chain.app import db
 from event_chain.app import forms
 from event_chain.app import models
 from event_chain.app import utils

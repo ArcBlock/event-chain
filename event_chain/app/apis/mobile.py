@@ -96,7 +96,7 @@ def buy_ticket(event_address):
             if ticket_address and hash:
                 logger.info("Ticket {} is bought successfully "
                             "by mobile.".format(ticket_address))
-                base58_encoded = utils.base58_encode_tx(
+                base58_encoded = forge_utils.multibase_b58encode(
                         tx.SerializeToString())
                 js = json.dumps({'ticket': ticket_address,
                                  'hash': hash,
@@ -105,10 +105,7 @@ def buy_ticket(event_address):
                 resp = Response(js, status=200, mimetype='application/json')
                 return resp
             else:
-                logger.error(
-                        'Fail to buy ticket. ticket '
-                        'address: {0}, hash : {1}.'.format(ticket_address,
-                                                           hash))
+                logger.error('Fail to buy ticket for mobile.')
                 return utils.response_error(
                         'Please try buying the ticket again.')
     except Exception as e:
