@@ -71,17 +71,17 @@
                                     <div class="column is-4">
                                         <div class="card is-shady">
                                             <header class="card-header">
-                                                <p class="card-header-title"> {{ events.get(ticket.address).event_info.title }} </p>
+                                                <p class="card-header-title"> {{ events.get(ticket.address).title }} </p>
                                             </header>
                                             <div class="card-content">
                                                 <div class="content">
                                                     <div class="content">
                                                         <p><span class="icon is-small is-left">
                           <i class="fa fa-map-marker" style="margin-right:3px;"></i>
-                        </span> {{ events.get(ticket.address).event_info.location }}</p>
+                        </span> {{ events.get(ticket.address).location }}</p>
                                                         <p><span class="icon is-small is-left">
                           <i class="fa fa-calendar" style="margin-right:3px;"></i>
-                        </span> {{ events.get(ticket.address).display_start_time }}</p>
+                        </span> {{ events.get(ticket.address).start_time }}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -105,7 +105,7 @@
                                                                         <br>
                                                                         <p>Are you sure you want to use this ticket to
                                                                             join
-                                                                            <b>{{ events.get(ticket.address).event_info.title }}</b>?
+                                                                            <b>{{ events.get(ticket.address).title }}</b>?
                                                                         </p>
                                                                         <br>
 

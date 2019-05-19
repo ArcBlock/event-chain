@@ -85,18 +85,20 @@ build-all-protos:
 	 echo "from event_chain.protos.protos.$$(basename $$filename .py) import *" >>$(PYTHON_TARGET)/protos/__init__.py; \
 	 done
 
-clean-build:
+clean-pypi-build:
 	@rm -rf build
 	@rm -rf dist
 	@echo "All build and dist folders are cleaned!"
 
-package-pypi: clean-build
+package-pypi:
 	@python setup.py sdist bdist_wheel
 	@echo "file packaged successfully!"
 
-upload-pypi: package-pypi
+upload-pypi:
 	@twine upload -r pypi dist/*
 	@echo "file uploaded successfully!"
+
+pypi: clean-pypi-build package-pypi upload-pypi clean-pypi-build
 
 include .makefiles/*.mk
 

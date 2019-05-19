@@ -36,16 +36,16 @@ def buy_ticket(event_address, user):
 def consume(ticket_address, user):
     logger.debug("Consuming ticket {}".format(ticket_address))
     ticket = models.get_ticket_state(ticket_address)
-    logger.debug("Event is  {}".format(ticket.ticket_info.event_address))
-    consume_tx = models.get_event_state(
-            ticket.ticket_info.event_address,
-    ).event_info.consume_tx
+    consume_tx = models.get_event_factory( ticket.parent ).consume_tx
     if not consume_tx:
         return None
 
     logger.debug("consume tx: {}".format(consume_tx))
 
-    res = ticket.consume(consume_tx, user.get_wallet(), user.token)
+    tx = forge_rpc.finalize_consume_asset(consume_tx, user.get_wallet(), user.token,
+                                          forge_utils.encode_to_any('fg:x:address',
+                                                                    ticket_address.encode()))
+    res = forge_rpc.send_tx(tx)
 
     if res.code != 0 or res.hash is None:
         logger.error(res)

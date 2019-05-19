@@ -21,9 +21,9 @@ def buy_ticket_mobile(tx, signature):
     tx.signature = signature
 
     ticket_address = acquire_asset_tx.specs[0].address
-    res = forge_rpc.send(tx)
+    res = forge_rpc.send_tx(tx)
     if forge_utils.is_response_ok(res):
-        return ticket_address, hash
+        return ticket_address, res.hash
     else:
         return None, None
 
