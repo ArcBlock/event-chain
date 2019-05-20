@@ -102,7 +102,8 @@ def create():
                     end_time=form.end_time.data,
                     price=form.ticket_price.data,
                     location=form.location.data,
-                    img_url = form.img_url.data,
+                    img_url=form.img_url.data,
+                    details=form.details.data,
                     wallet=session.get('user').get_wallet(),
                     token=session.get('user').token,
             )

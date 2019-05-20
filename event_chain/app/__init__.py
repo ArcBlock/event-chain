@@ -6,6 +6,7 @@ from flask import Flask
 from flask_googlemaps import GoogleMaps
 from flask_qrcode import QRcode
 from flask_sqlalchemy import SQLAlchemy
+from flaskext.markdown import Markdown
 
 from flask_session import Session
 
@@ -32,7 +33,9 @@ def create_app():
     app.config.from_object(__name__)
 
     initialize_extensions(app)
+    Markdown(app)
     register_blueprints(app)
+
 
     return app
 

@@ -20,3 +20,4 @@ class EventForm(FlaskForm):
     address = StringField('Address')
     location = StringField('Location', validators=[DataRequired()])
     img_url = StringField('Image', validators=[DataRequired()])
+    details = StringField('Details')
