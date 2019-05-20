@@ -69,10 +69,7 @@ def detail(address):
     form = EventForm()
     if is_loggedin():
         url = gen_mobile_url(address)
-        logger.info("Url for mobile buy ticket: {}".format(url))
-
         consume_url = gen_consume_url(address)
-        logger.info("Url for mobile consume ticket: {}".format(consume_url))
 
         txs = controllers.list_acquire_asset_txs(address)
         num_txs = len(txs)
@@ -105,6 +102,7 @@ def create():
                     end_time=form.end_time.data,
                     price=form.ticket_price.data,
                     location=form.location.data,
+                    img_url = form.img_url.data,
                     wallet=session.get('user').get_wallet(),
                     token=session.get('user').token,
             )
@@ -142,5 +140,4 @@ def gen_mobile_url(event_address):
                 'api_mobile.buy_ticket', event_address=event_address),
     }
     r = requests.Request('GET', ARC, params=params).prepare()
-    logger.info(u'Url generated {}'.format(r.url))
     return r.url
