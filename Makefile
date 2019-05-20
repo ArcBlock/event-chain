@@ -90,7 +90,7 @@ clean-pypi-build:
 	@rm -rf dist
 	@echo "All build and dist folders are cleaned!"
 
-package-pypi:
+package-pypi: clean-pypi-build
 	@python setup.py sdist bdist_wheel
 	@echo "file packaged successfully!"
 
@@ -98,7 +98,7 @@ upload-pypi:
 	@twine upload -r pypi dist/*
 	@echo "file uploaded successfully!"
 
-pypi: clean-pypi-build package-pypi upload-pypi clean-pypi-build
+pypi: package-pypi upload-pypi clean-pypi-build
 
 include .makefiles/*.mk
 
