@@ -37,7 +37,7 @@
         {#          {% endfor %}#}
         {#        </section>#}
 
-        <form id="create-product" action="/create" method="POST">
+        <form id="create-product" action={{ url_for('events.create') }} method="POST">
           {#          {% for message in get_flashed_messages() %}#}
           {#            <div class="field">#}
           {#              <label class="label">Subject</label>#}

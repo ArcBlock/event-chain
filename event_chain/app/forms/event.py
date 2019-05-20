@@ -2,7 +2,6 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField
 from wtforms import StringField
 from wtforms import SubmitField
-from wtforms import ValidationError
 from wtforms import validators
 from wtforms.validators import DataRequired
 
@@ -20,3 +19,4 @@ class EventForm(FlaskForm):
     ticket_price = IntegerField("TicketPrice")
     address = StringField('Address')
     location = StringField('Location', validators=[DataRequired()])
+    img_url = StringField('Image', validators=[DataRequired()])

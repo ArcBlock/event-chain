@@ -1,16 +1,6 @@
 import logging
 
 import requests
-from event_chain.app import controllers
-from event_chain.app import db
-from event_chain.app import models
-from event_chain.app import utils
-from event_chain.app.forms.event import EventForm
-from event_chain.config import config
-from event_chain.config.config import APP_ADDR
-from event_chain.config.config import APP_PK
-from event_chain.config.config import ARC
-from event_chain.config.config import SERVER_ADDRESS
 from flask import Blueprint
 from flask import redirect
 from flask import render_template
@@ -19,14 +9,21 @@ from flask import session
 from flask import url_for
 from forge_sdk import utils as forge_utils
 
+from event_chain.app import controllers
 from event_chain.app import models
 from event_chain.app import utils
+from event_chain.app.forms.event import EventForm
 from event_chain.app.models import sql
+from event_chain.config import config
+from event_chain.config.config import APP_ADDR
+from event_chain.config.config import APP_PK
+from event_chain.config.config import ARC
+from event_chain.config.config import SERVER_ADDRESS
 
 events = Blueprint(
-    'events',
-    __name__,
-    template_folder='templates',
+        'events',
+        __name__,
+        template_folder='templates',
 )
 
 logger = logging.getLogger('view-event')
@@ -35,11 +32,12 @@ logger = logging.getLogger('view-event')
 def to_price(biguint):
     return forge_utils.unit_to_token(forge_utils.biguint_to_int(biguint))
 
+
 @events.route("/all", methods=['GET', 'POST'])
 def all():
     def list_events():
         asset_factories = sql.AssetState.query.filter_by(
-            moniker='general_event').all()
+                moniker='general_event').all()
         addr_list = [factory.address for factory in asset_factories]
         event_states = []
         for addr in addr_list:
@@ -63,7 +61,7 @@ def detail(address):
     if error:
         return error
     forge_web = 'http://{0}:{1}/node/explorer/txs/'.format(
-        config.app_host, config.forge_port
+            config.app_host, config.forge_port
     )
 
     event = models.get_event_factory(address)
@@ -81,11 +79,11 @@ def detail(address):
         tx_lists = utils.chunks(txs, 3)
         logger.debug('forgeweb:{}'.format(forge_web))
         return render_template(
-            'events/event_details.html', **locals(),
-            to_display_time=utils.to_display_time,
-            shorten_hash=utils.shorten_hash,
-            to_short_time=utils.to_short_time,
-            to_price=to_price
+                'events/event_details.html', **locals(),
+                to_display_time=utils.to_display_time,
+                shorten_hash=utils.shorten_hash,
+                to_short_time=utils.to_short_time,
+                to_price=to_price
         )
     return redirect(url_for('admin.login'))
 
@@ -98,39 +96,28 @@ def create():
     form = EventForm()
     if form.validate_on_submit():
         if request.method == "POST":
-            event = controllers.create_event(
-                user=session.get('user'),
-                title=form.title.data,
-                total=form.total.data,
-                description=form.description.data,
-                start_time=form.start_time.data,
-                end_time=form.end_time.data,
-                ticket_price=form.ticket_price.data * 1e+16,
-                location=form.location.data,
-                conn=g.db,
+            event_address = controllers.create_event_general(
+                    user=session.get('user'),
+                    title=form.title.data,
+                    limit=form.total.data,
+                    description=form.description.data,
+                    start_time=form.start_time.data,
+                    end_time=form.end_time.data,
+                    price=form.ticket_price.data,
+                    location=form.location.data,
+                    wallet=session.get('user').get_wallet(),
+                    token=session.get('user').token,
             )
-            if event.finished:
-                db.session.add(EventModel(address=event.address,
-                                          owner=session.get('user')
-                                          .get_wallet().address))
-                db.session.commit()
-            utils.wait()
-            return redirect('/')
+            if event_address:
+                logger.info(f'Event {event_address} has been created.')
+
+            else:
+                logger.error(f'Error in creating event.')
+            return redirect(url_for('events.all'))
     else:
         logger.error(form.errors)
         utils.flash_errors(form)
     return render_template('events/event_create.html', form=form)
-
-
-# def list_event_exchange_txs(event_address):
-#     hashes = [[model.hash for model in ExchangeHashModel.query.filter(
-#         ExchangeHashModel.event_address == event_address)]]
-#     tx_list = []
-#     for hash in hashes:
-#         tx = controllers.get_tx_info(hash)
-#         if tx:
-#             tx_list.append(tx)
-#     return tx_list
 
 
 def is_loggedin():
@@ -142,7 +129,7 @@ def is_loggedin():
 
 def gen_consume_url(event_address):
     url = SERVER_ADDRESS + url_for(
-        'api_mobile.require_asset', event_address=event_address),
+            'api_mobile.require_asset', event_address=event_address),
     return utils.gen_did_url(url, 'RequestAuth')
 
 
@@ -152,7 +139,7 @@ def gen_mobile_url(event_address):
         'appDid': 'did:abt:' + APP_ADDR,
         'action': 'requestAuth',
         'url': SERVER_ADDRESS + url_for(
-            'api_mobile.buy_ticket', event_address=event_address),
+                'api_mobile.buy_ticket', event_address=event_address),
     }
     r = requests.Request('GET', ARC, params=params).prepare()
     logger.info(u'Url generated {}'.format(r.url))
