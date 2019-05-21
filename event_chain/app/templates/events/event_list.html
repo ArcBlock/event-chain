@@ -30,7 +30,7 @@
                   <div class="content">
                     <h2 class="subtitle strong">
                       <a style="color:#404040;"
-                         href={{ url_for('events.detail',address=event.address) }}>{{ event.title }}</a>
+                         href={{ url_for('events.detail',address=event.address) }}>{{ event.title |upper }}</a>
                     </h2>
                     <p>
                         <span class="icon is-small is-left">
