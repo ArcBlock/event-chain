@@ -24,7 +24,7 @@ def login():
             address=form.address.data,
         )
         session['user'] = user
-        return redirect(url_for('/'))
+        return redirect(url_for('events.all'))
     else:
         utils.flash_errors(form)
     return render_template('admin/login.html', form=form)
