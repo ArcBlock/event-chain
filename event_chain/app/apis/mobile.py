@@ -275,9 +275,6 @@ def consume(ticket_address):
         if error:
             return error
 
-        ticket = models.get_ticket_state(ticket_address)
-        event = models.get_event_factory(ticket.event_address)
-
         if request.method == 'POST':
             try:
                 req_data = request.get_data(as_text=True)
@@ -291,22 +288,14 @@ def consume(ticket_address):
                         "data received is {}".format(req))
 
             hash = controllers.consume_ticket_mobile(
-                    ticket,
-                    event.consume_tx,
-                    wallet_response.get_address(),
+                    wallet_response.get_origin_tx(),
                     wallet_response.get_signature(),
-                    wallet_response.get_user_pk(),
-            )
-            multisig_data = forge_utils.encode_to_any(
-                    'fg:x:address',
                     ticket_address,
             )
-            base58_tx = utils.base58_encode_tx(utils.update_tx_multisig(
-                    tx=event.consume_tx,
-                    signer=wallet_response.get_address(),
-                    pk=wallet_response.get_user_pk(),
-                    data=multisig_data
-            ))
+            base58_tx = utils.base58_encode_tx(
+                    controllers.build_cosnume_ticket_mobile_tx(
+                            wallet_response.get_origin_tx(),
+                            wallet_response.get_signature()))
             if hash:
                 logger.info("ConsumeTx has been sent.")
                 js = json.dumps({'hash': hash,
