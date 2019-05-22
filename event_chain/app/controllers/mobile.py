@@ -28,19 +28,29 @@ def buy_ticket_mobile(tx, signature):
         return None, None
 
 
-def consume_ticket_mobile(ticket, consume_tx, address, signature, user_pk):
-    res = ticket.consume_mobile(consume_tx, address, signature, user_pk)
+def consume_ticket_mobile(origin_tx, signature, ticket_address):
+    new_tx = build_cosnume_ticket_mobile_tx(origin_tx, signature,)
+    res = forge_rpc.send_tx(new_tx)
 
     if res.code != 0 or res.hash is None:
         logger.error(res)
-        logger.error(
-            'Fail to consume ticket by mobile {}'.format(ticket.address),
-        )
+        logger.error(f'Fail to consume ticket by mobile {ticket_address}')
     else:
-        logger.info("Mobile ConsumeTx has been sent by tx: {}!".format(
-            res.hash,
-        ))
+        logger.info(f"Mobile ConsumeTx has been sent by tx: {res.hash}!")
     return res.hash
+
+
+def build_cosnume_ticket_mobile_tx(origin_tx, signature,):
+    old_multisig = origin_tx.signatures[0]
+    new_multisig = forge_protos.Multisig(
+            signer=old_multisig.signer,
+            pk=old_multisig.pk,
+            signature=signature,
+            data=old_multisig.data
+    )
+    new_tx = origin_tx.__deepcopy__()
+    forge_rpc.add_multisigs(new_tx, [new_multisig])
+    return new_tx
 
 
 def gen_poke_tx(address, pk):
