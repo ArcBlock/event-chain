@@ -5,4 +5,7 @@ sock_tcp = "tcp://127.0.0.1:27219"
 path = "~/.forge/event_chain"
 host="10.1.10.177"
 forge_port=8211
-# sock_grpc = "tcp://127.0.0.1:37210"
+
+## sock_grpc = "tcp://127.0.0.1:37210"
+[forge]
+sock_grpc = "tcp://127.0.0.1:28210"
