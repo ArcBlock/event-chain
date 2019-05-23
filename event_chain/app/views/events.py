@@ -35,18 +35,9 @@ def to_price(biguint):
 
 @events.route("/all", methods=['GET', 'POST'])
 def all():
-    def list_events():
-        asset_factories = sql.AssetState.query.filter_by(
-                moniker='general_event').all()
-        addr_list = [factory.address for factory in asset_factories]
-        event_states = []
-        for addr in addr_list:
-            state = models.get_event_factory(addr)
-            if state:
-                event_states.append(state)
-        return event_states
 
-    all_events = list_events()
+
+    all_events = controllers.list_events()
     event_lists = utils.chunks(all_events, 3)
 
     return render_template(
@@ -105,7 +96,7 @@ def create():
                     img_url=form.img_url.data,
                     details=form.details.data,
                     wallet=session.get('user').get_wallet(),
-                    token=session.get('user').token,
+                    token=session.get('user').wallet.token,
             )
             if event_address:
                 logger.info(f'Event {event_address} has been created.')
