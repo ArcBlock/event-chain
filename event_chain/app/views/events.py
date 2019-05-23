@@ -35,8 +35,6 @@ def to_price(biguint):
 
 @events.route("/all", methods=['GET', 'POST'])
 def all():
-
-
     all_events = controllers.list_events()
     event_lists = utils.chunks(all_events, 3)
 

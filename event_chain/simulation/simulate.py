@@ -31,7 +31,9 @@ def simulate():
     logger.info("Creating Events...")
     for event in events:
         event['description'] = event['description'] + str(uuid.uuid4())
-        controllers.create_event_general(test_user.get_wallet(), **event)
+        controllers.create_event_general(wallet=test_user.get_wallet(),
+                                         token=test_user.wallet.token,
+                                         **event)
     logger.info("All simulated events are created.")
 
 
