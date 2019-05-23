@@ -6,7 +6,7 @@ from flask import g
 from flask import redirect
 from flask import render_template
 from flask import session
-from flask import url_for
+from flask import url_for, flash
 
 admin = Blueprint(
     'admin',
@@ -19,12 +19,15 @@ def login():
     form = RegisterForm()
     if form.validate_on_submit():
         user = controllers.load_user(
-            moniker=form.name.data,
             passphrase=form.passphrase.data,
             address=form.address.data,
         )
         session['user'] = user
-        return redirect(url_for('events.all'))
+        if user:
+            return redirect(url_for('events.all'))
+        else:
+            flash("Passphrase and address don't match!", 'error')
+            return redirect(url_for('admin.login'))
     else:
         utils.flash_errors(form)
     return render_template('admin/login.html', form=form)
@@ -39,20 +42,14 @@ def register():
             form.passphrase.data
         )
         session['user'] = user
-        g.logger.debug(
-            'New User registered! wallet: {}, token: {}'.format(
-                user.wallet,
-                user.token,
-            ),
-        )
-        g.logger.debug("form is validated!!")
+        g.logger.debug('New User registered!')
     else:
         utils.flash_errors(form)
         return render_template('admin/login.html', form=form)
-    return redirect('/')
+    return redirect(url_for('events.all'))
 
 
 @admin.route("/logout", methods=['GET', 'POST'])
 def logout():
     session['user'] = None
-    return redirect('/')
+    return redirect(url_for('admin.login'))
