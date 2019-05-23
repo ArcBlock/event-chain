@@ -79,7 +79,6 @@ def refresh_token():
     from event_chain.app.controllers import admin
     user = session.get('user')
     user = admin.load_user(
-            moniker=user.moniker,
             passphrase=user.passphrase,
             address=user.address,
     )

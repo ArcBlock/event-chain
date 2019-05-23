@@ -23,6 +23,19 @@ def parse_date(str_date):
     )
 
 
+def list_events():
+    asset_factories = sql.AssetState.query.filter_by(
+            moniker='general_event').all()
+    addr_list = [factory.address for factory in asset_factories]
+
+    event_states = []
+    for addr in addr_list:
+        state = models.get_event_factory(addr)
+        if state and state.num_created < state.limit:
+            event_states.append(state)
+    return event_states
+
+
 def gen_consume_tx(wallet, token=None):
     consume_itx = forge_protos.ConsumeAssetTx(issuer=wallet.address)
     tx = forge_rpc.build_tx(itx=forge_utils.encode_to_any(
@@ -67,9 +80,6 @@ def create_event_general(wallet, token=None, **kwargs):
     else:
         logger.error(f'Event hash was not generated.')
         return None
-
-
-
 
 
 def verify_event_address(event_address):

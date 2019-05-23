@@ -40,10 +40,6 @@
         <h2 class="title">New User</h2>
         <hr>
         <p>Create a passphrase protected wallet</p>
-        {#                <div class="box">#}
-        {#                    <figure class="avatar">#}
-        {#                        <img src="/static/images/digit.jpg" style="width: 128px;height: 128px">#}
-        {#                    </figure>#}
         <form class="login-form" action={{ url_for('admin.register') }} method="POST">
           <br>
           <div class="field">
@@ -86,7 +82,7 @@
 
           <div class="field">
             <div class="control">
-              <input class="input is-medium" name="name" type="text" placeholder=" Username">
+              <input class="input is-medium" name="name" type="text" value="placeholder" hidden="true">
             </div>
           </div>
           <div class="field">

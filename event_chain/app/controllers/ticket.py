@@ -28,7 +28,7 @@ def buy_tickets_general(event_address, num, wallet, token=None):
 def buy_ticket(event_address, user):
     logger.debug(f'user wallet: {user.get_wallet()}')
     ticket_address = buy_tickets_general(event_address, 1,
-                                         user.get_wallet(), user.token)
+                                         user.get_wallet(), user.wallet.token)
     logger.debug(f"Buy ticket process is completed. ticket {ticket_address}")
     return ticket_address
 
@@ -42,7 +42,7 @@ def consume(ticket_address, user):
 
     logger.debug("consume tx: {}".format(consume_tx))
 
-    tx = forge_rpc.finalize_consume_asset(consume_tx, user.get_wallet(), user.token,
+    tx = forge_rpc.finalize_consume_asset(consume_tx, user.get_wallet(), user.wallet.token,
                                           forge_utils.encode_to_any('fg:x:address',
                                                                     ticket_address.encode()))
     res = forge_rpc.send_tx(tx)

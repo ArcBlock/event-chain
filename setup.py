@@ -43,6 +43,7 @@ setuptools.setup(
             'flask-googlemaps',
             'forge-python-sdk',
             'requests',
+            'Flask-Markdown',
             'click==6.7',
         ],
 )
