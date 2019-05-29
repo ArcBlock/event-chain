@@ -17,9 +17,6 @@ APP_ADDR = "z1UT9an1Z4W1gnmzASneER2J5eqtx5jfwgx"
 
 ARC = 'https://abtwallet.io/i/'
 
-
-forge_config.use_config(app_config_path)
-
 app_path = forge_config.get_app_path()
 
 forge_path = forge_config.get_forge_path()
