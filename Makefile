@@ -90,7 +90,7 @@ clean-pypi-build:
 	@rm -rf dist
 	@echo "All build and dist folders are cleaned!"
 
-package-pypi: clean-pypi-build
+package-pypi:
 	@python setup.py sdist bdist_wheel
 	@echo "file packaged successfully!"
 
