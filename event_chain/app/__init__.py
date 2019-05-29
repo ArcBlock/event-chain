@@ -36,7 +36,6 @@ def create_app():
     Markdown(app)
     register_blueprints(app)
 
-
     return app
 
 
