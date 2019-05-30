@@ -94,7 +94,9 @@ def require_sig_buy_ticket(did, tx, url):
         'action': 'responseAuth',
         'workflow': 'buy-ticket',
     }
-    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+    response = forge_did.require_sig(**params, **APP_CREDENTIALS)
+    logger.debug('did auth response: {}'.format(response))
+    return response
 
 
 def require_sig_poke(did, tx, url):
@@ -106,7 +108,9 @@ def require_sig_poke(did, tx, url):
         'action': 'responseAuth',
         'workflow': 'poke',
     }
-    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+    response = forge_did.require_sig(**params, **APP_CREDENTIALS)
+    logger.debug('did auth response: {}'.format(response))
+    return response
 
 
 def require_sig_consume(did, tx, url):
@@ -118,7 +122,9 @@ def require_sig_consume(did, tx, url):
         'action': 'responseAuth',
         'workflow': 'use-ticket',
     }
-    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+    response = forge_did.require_sig(**params, **APP_CREDENTIALS)
+    logger.debug('did auth response: {}'.format(response))
+    return response
 
 
 def require_asset_consume(url, target):

@@ -30,7 +30,7 @@ class User:
             logger.info(f'Poke successfully.hash: {res.hash}')
 
 
-class Wallet:
+class UserInfo:
     def __init__(self, pk, address=None, sk=None, token=None, did=None):
         self.address = address
         self.pk = pk if isinstance(pk,

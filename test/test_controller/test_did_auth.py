@@ -2,7 +2,7 @@ import json
 import unittest
 
 from forge_sdk import protos
-from event_chain.app.controllers import did_auth
+from forge_sdk import did
 
 from forge_sdk import utils as forge_utils
 
@@ -28,7 +28,7 @@ class AuthRequestTest(unittest.TestCase):
             'action': 'requestAuth'
         }
 
-        response = did_auth.require_sig(**args)
+        response = did.require_sig(**args)
 
         body = json.loads(forge_utils.multibase_b64decode(
             json.loads(response).get('authInfo').split('.')[1]))

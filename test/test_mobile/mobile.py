@@ -9,8 +9,8 @@ user = forge_rpc.create_wallet(moniker='tester', passphrase='abcd1234').wallet
 
 event = 'zjdrUJQS4g889fJY5UGRvKqCdFktUCXVUAfd'
 
-buy_url = f'http://localhost:5000/api/mobile/buy-ticket/{event}'
-require_asset_url = f'http://localhost:5000/api/mobile/require-asset/{event}'
+buy_url = f'http://10.1.10.177:5000/api/mobile/buy-ticket/{event}'
+require_asset_url = f'http://10.1.10.177:5000/api/mobile/require-asset/{event}'
 get_request_params = {
         'userPk': forge_utils.multibase_b58encode(user.pk),
         'userDid': 'did:abt:' + user.address,
@@ -75,7 +75,7 @@ def send_require_asset_post(middle_user_info, ticket):
 
 def consume_asset(middle_user_info,ticket_address):
 
-    consume_url = f'http://localhost:5000/api/mobile/consume/{ticket_address}'
+    consume_url = f'http://10.1.10.177:5000/api/mobile/consume/{ticket_address}'
 
     origin = get_origin(middle_user_info)
     tx = forge_utils.parse_to_proto(forge_utils.multibase_b58decode(origin),

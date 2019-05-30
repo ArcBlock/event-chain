@@ -46,9 +46,6 @@ def all():
 
 @events.route("/detail/<address>", methods=['GET', 'POST'])
 def detail(address):
-    error = utils.verify_event(address)
-    if error:
-        return error
     forge_web = 'http://{0}:{1}/node/explorer/txs/'.format(
             config.app_host, config.forge_port
     )

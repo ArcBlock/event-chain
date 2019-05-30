@@ -27,10 +27,6 @@ def buy():
     address = form.address.data
     event = models.get_event_factory(address)
 
-    error = utils.verify_event(address)
-    if error:
-        return error
-
     hash = controllers.buy_ticket(address, session.get('user'))
     if not hash:
         logger.error("Fail to buy ticket from web.")
@@ -49,9 +45,6 @@ def buy():
 def use(address):
     utils.refresh_token()
 
-    error = utils.verify_ticket(address)
-    if error:
-        return error
     controllers.consume(address, session['user'])
     flash('Your ticket has been checked successfully! Enjoy your event!',
           category='info')
