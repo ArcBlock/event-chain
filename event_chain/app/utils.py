@@ -46,31 +46,6 @@ def chunks(l, n):
         yield l[i:i + n]
 
 
-def verify_ticket(address):
-    from event_chain.app.controllers import ticket
-    if not address:
-        return response_error("Please provide a valid ticket address.")
-    try:
-        ticket.verify_ticket_address(address)
-    except Exception as e:
-        return response_error(e.args[0])
-
-
-def verify_event(address):
-    from event_chain.app.controllers import event
-    if not address:
-        return response_error("Please provide a valid event address.")
-    try:
-        event.verify_event_address(address)
-    except Exception as e:
-        return response_error(e.args[0])
-
-
-def response_error(msg):
-    error = json.dumps({'error': msg})
-    return Response(error, status=400, mimetype='application/json')
-
-
 def wait():
     sleep(5)
 
