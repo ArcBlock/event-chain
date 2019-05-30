@@ -1,20 +1,18 @@
 import logging
 from datetime import datetime
 
-from event_chain.app import db
-from event_chain.app import models
-from event_chain.app import utils
-from event_chain.config import config
-
+from forge_sdk import did as forge_did
+from forge_sdk import protos as forge_protos
 from forge_sdk import rpc as forge_rpc
 from forge_sdk import utils as forge_utils
-from forge_sdk import protos as forge_protos
+
+from event_chain.app import utils
+from event_chain.config import config
 
 logger = logging.getLogger('controller-mobile')
 
 
 def buy_ticket_mobile(tx, signature):
-
     acquire_asset_tx = forge_utils.parse_to_proto(tx.itx.value,
                                                   forge_protos.AcquireAssetTx)
 
@@ -29,7 +27,7 @@ def buy_ticket_mobile(tx, signature):
 
 
 def consume_ticket_mobile(origin_tx, signature, ticket_address):
-    new_tx = build_cosnume_ticket_mobile_tx(origin_tx, signature,)
+    new_tx = build_cosnume_ticket_mobile_tx(origin_tx, signature, )
     res = forge_rpc.send_tx(new_tx)
 
     if res.code != 0 or res.hash is None:
@@ -40,7 +38,7 @@ def consume_ticket_mobile(origin_tx, signature, ticket_address):
     return res.hash
 
 
-def build_cosnume_ticket_mobile_tx(origin_tx, signature,):
+def build_cosnume_ticket_mobile_tx(origin_tx, signature, ):
     old_multisig = origin_tx.signatures[0]
     new_multisig = forge_protos.Multisig(
             signer=old_multisig.signer,
@@ -55,9 +53,9 @@ def build_cosnume_ticket_mobile_tx(origin_tx, signature,):
 
 def gen_poke_tx(address, pk):
     poke_itx = forge_protos.PokeTx(
-        date=str(
-            datetime.now().date()),
-        address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
+            date=str(
+                    datetime.now().date()),
+            address='zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz',
     )
     itx = forge_utils.encode_to_any('fg:t:poke', poke_itx)
     params = {
@@ -78,3 +76,57 @@ def send_poke_tx(poke_tx, signature):
         logger.error(res)
     else:
         return res.hash
+
+
+APP_CREDENTIALS = {
+    'APP_SK': config.APP_SK,
+    'APP_PK': config.APP_PK,
+    'APP_ADDR': config.APP_ADDR
+}
+
+
+def require_sig_buy_ticket(did, tx, url):
+    params = {
+        'user_did': did,
+        'tx': tx,
+        'url': config.SERVER_ADDRESS + url,
+        'description': 'Confirm the purchase below.',
+        'action': 'responseAuth',
+        'workflow': 'buy-ticket',
+    }
+    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+
+
+def require_sig_poke(did, tx, url):
+    params = {
+        'user_did': did,
+        'tx': tx,
+        'url': config.SERVER_ADDRESS + url,
+        'description': 'Get some lucky money!',
+        'action': 'responseAuth',
+        'workflow': 'poke',
+    }
+    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+
+
+def require_sig_consume(did, tx, url):
+    params = {
+        'user_did': did,
+        'tx': tx,
+        'url': config.SERVER_ADDRESS + url,
+        'description': 'Confirm to use the ticket.',
+        'action': 'responseAuth',
+        'workflow': 'use-ticket',
+    }
+    return forge_did.require_sig(**params, **APP_CREDENTIALS)
+
+
+def require_asset_consume(url, target):
+    params = {
+        'url': config.SERVER_ADDRESS + url,
+        'description': 'Please select a ticket for event.',
+        'action': 'responseAuth',
+        'workflow': 'use-ticket',
+        'target': target,
+    }
+    return forge_did.require_asset(**params, **APP_CREDENTIALS)

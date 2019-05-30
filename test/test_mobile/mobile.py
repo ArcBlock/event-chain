@@ -2,10 +2,13 @@ import requests
 from forge_sdk import rpc as forge_rpc, utils as forge_utils, protos as forge_protos
 import json
 from time import sleep
+import logging
 
 
 user = forge_rpc.create_wallet(moniker='tester', passphrase='abcd1234').wallet
-event = 'zjdkJ6rWiSxv4xCJMfUxebQ6Xcoz6ff6dKH3'
+
+event = 'zjdrUJQS4g889fJY5UGRvKqCdFktUCXVUAfd'
+
 buy_url = f'http://localhost:5000/api/mobile/buy-ticket/{event}'
 require_asset_url = f'http://localhost:5000/api/mobile/require-asset/{event}'
 get_request_params = {
@@ -88,16 +91,24 @@ def consume_asset(middle_user_info,ticket_address):
 if __name__ == '__main__':
     res = buy_ticket_get()
     middle = res.get('authInfo').split('.')[1]
+    logging.info('success: buy ticket get')
+
     res = buy_ticket_post(middle)
     ticket_address = res.get('ticket')
+    logging.info('success: buy ticket post')
 
     sleep(5)
 
     res = send_require_asset_get()
     middle = res.get('authInfo').split('.')[1]
+    logging.info('success: require asset get')
+
     res = send_require_asset_post(middle, ticket_address)
     middle = res.get('authInfo').split('.')[1]
+    logging.info('success: require asset post')
+
     res = consume_asset(middle, ticket_address)
+    logging.info('success: consume asset post')
 
     print(res)
 

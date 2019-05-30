@@ -1,6 +1,6 @@
 ---
 name: event_chain
-version: 1
+version: 2
 tags: []
 namespace: CoreTx
 description: protocol information for eventchain

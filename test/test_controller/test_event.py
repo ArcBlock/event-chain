@@ -2,7 +2,7 @@ import unittest
 
 from forge_sdk import rpc
 
-from event_chain.application import controllers
+from event_chain.app import controllers
 
 
 class EventControllerTest(unittest.TestCase):
