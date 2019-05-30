@@ -28,7 +28,7 @@ def buy_ticket(event_address):
     try:
         if request.method == 'GET':
 
-            wallet = lib.parse_request_get(request)
+            wallet = lib.parse_request_get(request,'buy-ticket')
 
             acquire_asset_tx, _ = forge_rpc.build_acquire_asset_tx(
                     to=event_address,
