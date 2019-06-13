@@ -20,7 +20,6 @@ def simulate():
 
     test_user = forge.rpc.create_wallet(moniker='alice', passphrase='abcd1234')
 
-
     logger.info("Creating Events...")
     for event in events:
         event['description'] = event['description'] + str(uuid.uuid4())

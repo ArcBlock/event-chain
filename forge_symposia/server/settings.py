@@ -1,4 +1,6 @@
 from os import environ
+from os import path
+from forge_symposia.server import env
 
 MONGO_URI = environ.get(
         'MONGO_URI') or 'mongodb://127.0.0.1:27017/forge-python-starter'
@@ -64,4 +66,4 @@ user = {
 DOMAIN = {'user': user, 'token': active_token}
 
 JWT_SECRET_KEY='python-starter-secret-key'
-SQLALCHEMY_DATABASE_URI='sqlite:////Users/shi/tmp/flask.db'
+SQLALCHEMY_DATABASE_URI='sqlite:///' + env.INDEX_DB

@@ -3,17 +3,18 @@ import logging
 import requests
 from eve import Eve
 from flask import g, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import (JWTManager, get_jwt_identity, jwt_required)
-from forge_sdk import ForgeConn, did as forge_did, protos as forge_protos
+from forge_sdk import did as forge_did, protos as forge_protos
 
 from forge_symposia.server import env
 from forge_symposia.server import utils
+from forge_symposia.server.forge import forge
 
-logging.basicConfig(level=logging.DEBUG)
 
 app = Eve()
 jwt = JWTManager(app)
-forge = ForgeConn()
+sql_db=SQLAlchemy(app)
 forge_rpc = forge.rpc
 
 
