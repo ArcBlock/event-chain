@@ -101,7 +101,23 @@ class ResponseEvent:
         self.location = event_state.location
         self.img_url = event_state.img_url
         self.details = event_state.details
-        self.price = forge_utils.from_unit(forge_utils.biguint_to_int(event_state.price))
+        self.price = forge_utils.from_unit(
+            forge_utils.biguint_to_int(event_state.price))
         self.address = event_state.address
         self.issuer = event_state.issuer
         self.limit = event_state.limit
+        self.description = event_state.description
+
+
+class TicketState:
+    def __init__(self, ticket_state, event_state):
+        self.title = ticket_state.title
+        self.start_time = ticket_state.start_time
+        self.end_time = ticket_state.end_time
+        self.location = ticket_state.location
+        self.img_url = ticket_state.img_url
+        self.address = ticket_state.address
+        self.issuer = ticket_state.issuer
+
+        self.price = forge_utils.from_unit(
+            forge_utils.biguint_to_int(event_state.price))

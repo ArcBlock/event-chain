@@ -2,20 +2,19 @@ import logging
 
 import requests
 from eve import Eve
-from flask import g, jsonify, make_response
-from flask_sqlalchemy import SQLAlchemy
+from flask import g, jsonify, make_response, request
 from flask_jwt_extended import (JWTManager, get_jwt_identity, jwt_required)
+from flask_sqlalchemy import SQLAlchemy
 from forge_sdk import did as forge_did, protos as forge_protos
 
+from forge_symposia.server import controllers
 from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.forge import forge
-from forge_symposia.server import controllers
-
 
 app = Eve()
 jwt = JWTManager(app)
-sql_db=SQLAlchemy(app)
+sql_db = SQLAlchemy(app)
 forge_rpc = forge.rpc
 
 
@@ -65,12 +64,31 @@ def payments():
     return make_response()
 
 
-@app.route("/list_events", methods=['GET', 'POST'])
-def all():
+@app.route("/list_events", methods=['GET'])
+def list_event():
     all_events = controllers.list_events()
     # event_lists = utils.chunks(all_events, 3)
 
     return jsonify(all_events)
+
+
+@app.route("/detail/<address>", methods=['GET'])
+def event_detail(address):
+    event = controllers.get_response_event(address)
+    return jsonify(vars(event))
+
+
+@app.route("/user/<address>", methods=['GET'])
+def user(address):
+    type = request.args.get('type')
+    if not type:
+        return jsonify(error='Must provide a type parameter'), 400
+    elif type == 'tickets':
+        tickets = controllers.list_user_tickets(address)
+        return jsonify(tickets)
+    else:
+        return jsonify(
+                error=f"Server does not support '{type}'"), 400
 
 
 if __name__ == '__main__':

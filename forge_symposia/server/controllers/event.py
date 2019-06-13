@@ -28,19 +28,8 @@ def list_events():
                          moniker='general_event').all()]
 
     events = [lib.get_response_event(addr) for addr in addr_list]
-    res={e.address: vars(e) for e in events if e.num_created < e.limit}
-    logger.debug(res)
-
+    res=[vars(e) for e in events if e.num_created < e.limit]
     return res
-
-
-def gen_consume_tx(wallet, token=None):
-    consume_itx = forge_protos.ConsumeAssetTx(issuer=wallet.address)
-    tx = forge.rpc.build_tx(itx=forge_utils.encode_to_any(
-            'fg:t:consume_asset',
-            consume_itx), wallet=wallet, token=token,
-            chain_id=forge.config.chain_id)
-    return tx.SerializeToString()
 
 
 def create_event_general(wallet, token=None, **kwargs):
@@ -63,7 +52,7 @@ def create_event_general(wallet, token=None, **kwargs):
             template=template,
             type_url='ec:s:event_info',
             data_value=protos.EventInfo(details=kwargs.get('details'),
-                                        consume_asset_tx=gen_consume_tx(wallet,
+                                        consume_asset_tx=lib.gen_consume_tx(wallet,
                                                                         token)),
             **kwargs,
     )

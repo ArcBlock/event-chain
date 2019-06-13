@@ -52,7 +52,6 @@ user = {
         },
         'name': {
             'type': 'string',
-            'unique': True,
         },
         'email': {
             'type': 'string'
