@@ -17,6 +17,6 @@ class TransactionInfo:
 
 
 def get_event_factory(address):
-    state = forge_rpc.get_single_asset_state(address)
+    state = forge.rpc.get_single_asset_state(address)
     if state:
         return EventState(state)

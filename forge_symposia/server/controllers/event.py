@@ -4,10 +4,10 @@ from datetime import datetime
 
 from forge_sdk import protos as forge_protos, utils as forge_utils
 
-from forge_symposia.server import protos
+from forge_symposia.server import models
+from forge_symposia.server import protos, utils
 from forge_symposia.server.app import forge
-from forge_symposia.server import utils, protos
-
+from forge_symposia.server.controllers import lib
 
 logger = logging.getLogger('controller-event')
 
@@ -22,24 +22,24 @@ def parse_date(str_date):
     )
 
 
-# def list_events():
-#     asset_factories = sql.AssetState.query.filter_by(
-#             moniker='general_event').all()
-#     addr_list = [factory.address for factory in asset_factories]
-#
-#     event_states = []
-#     for addr in addr_list:
-#         state = models.get_event_factory(addr)
-#         if state and state.num_created < state.limit:
-#             event_states.append(state)
-#     return event_states
+def list_events():
+    addr_list = [factory.address for factory in
+                 models.DBAssetState.query.filter_by(
+                         moniker='general_event').all()]
+
+    events = [lib.get_response_event(addr) for addr in addr_list]
+    res={e.address: vars(e) for e in events if e.num_created < e.limit}
+    logger.debug(res)
+
+    return res
 
 
 def gen_consume_tx(wallet, token=None):
     consume_itx = forge_protos.ConsumeAssetTx(issuer=wallet.address)
     tx = forge.rpc.build_tx(itx=forge_utils.encode_to_any(
             'fg:t:consume_asset',
-            consume_itx), wallet=wallet, token=token,chain_id = forge.config.chain_id)
+            consume_itx), wallet=wallet, token=token,
+            chain_id=forge.config.chain_id)
     return tx.SerializeToString()
 
 
@@ -79,7 +79,6 @@ def create_event_general(wallet, token=None, **kwargs):
     else:
         logger.error(f'Event hash was not generated.')
         return None
-
 
 # def verify_event_address(event_address):
 #     try:

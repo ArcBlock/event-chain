@@ -10,6 +10,7 @@ from forge_sdk import did as forge_did, protos as forge_protos
 from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.forge import forge
+from forge_symposia.server import controllers
 
 
 app = Eve()
@@ -62,6 +63,14 @@ def payments():
         if tx and tx.hash:
             return jsonify(hash=tx.hash)
     return make_response()
+
+
+@app.route("/list_events", methods=['GET', 'POST'])
+def all():
+    all_events = controllers.list_events()
+    # event_lists = utils.chunks(all_events, 3)
+
+    return jsonify(all_events)
 
 
 if __name__ == '__main__':
