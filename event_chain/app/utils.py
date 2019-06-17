@@ -31,13 +31,7 @@ def flash_errors(form):
             )
 
 
-def get_proto(name):
-    try:
-        proto = getattr(protos, name)
-        return proto
-    except Exception:
-        logger.error(f'proto {name} does not exist in protos.')
-        return None
+
 
 
 def chunks(l, n):
