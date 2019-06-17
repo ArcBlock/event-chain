@@ -25,13 +25,11 @@ def get_response_event(address):
 def get_ticket_state(address):
     ticket_state = forge.rpc.get_single_asset_state(address)
     if ticket_state:
-        event_state = forge.rpc.get_event_state(ticket_state.parent)
+        event_state = get_event_state(ticket_state.parent)
         return models.TicketState(ticket_state, event_state)
     else:
         logger.error(f'Fail to get asset state for event {address}')
 
-def get_response_ticket(address):
-    return
 
 
 def gen_consume_tx(wallet, token=None):

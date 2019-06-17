@@ -9,6 +9,9 @@ from forge_sdk import utils as forge_utils
 from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.app import forge
+import logging
+
+logger=logging.getLogger('auth-lib')
 
 
 def create(operation,
@@ -43,7 +46,7 @@ def create(operation,
             user_params = get_handler(token=token,
                                       user_did=user_did,
                                       user_pk=user_pk,
-                                      did_params=params)
+                                      request=request)
 
             return utils.send_did_request(**params, **user_params)
 
@@ -51,11 +54,13 @@ def create(operation,
             wallet_res = forge_did.WalletResponse(request.get_json())
             response_data = post_handler(token=token,
                                          wallet_res=wallet_res)
+            logger.debug(jsonify(response_data))
             return jsonify(response_data)
 
     @bp.route('/token', methods=['GET'])
     def token():
-        return get_token(operation)
+        event_address=request.args.get('event_address')
+        return get_token(operation, event_address)
 
     @bp.route('/status', methods=['GET'])
     def status():
@@ -68,12 +73,14 @@ def create(operation,
     return bp
 
 
-def get_token(endpoint):
+def get_token(endpoint, event_address):
     token = secrets.token_hex(8)
     response = utils.mark_token_status(token, 'created')
 
+    default=utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}')
+
     url = forge_utils.did_url(
-            url=utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}'),
+            url=default if not event_address else utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}&event_address={event_address}'),
             action='requestAuth',
             app_pk=forge_utils.multibase_b58encode(env.APP_PK),
             app_addr=env.APP_ADDR)

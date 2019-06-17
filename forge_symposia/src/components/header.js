@@ -56,9 +56,6 @@ export default function Header() {
             <Button href="/profile" size="large">
               Profile
             </Button>
-            <Button href="/payment" size="large">
-              Payment
-            </Button>
           </React.Fragment>
         )}
       </div>

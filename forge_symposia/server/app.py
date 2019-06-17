@@ -23,6 +23,7 @@ def register_blueprints(application):
     application.register_blueprint(ep.login)
     application.register_blueprint(ep.checkin)
     application.register_blueprint(ep.payment)
+    application.register_blueprint(ep.buy_ticket)
 
 
 @app.before_request
@@ -64,21 +65,21 @@ def payments():
     return make_response()
 
 
-@app.route("/list_events", methods=['GET'])
+@app.route("/api/list_events", methods=['GET'])
 def list_event():
     all_events = controllers.list_events()
-    # event_lists = utils.chunks(all_events, 3)
+    event_lists = utils.chunks(all_events, 3)
 
-    return jsonify(all_events)
+    return jsonify(event_lists)
 
 
-@app.route("/detail/<address>", methods=['GET'])
+@app.route("/api/detail/<address>", methods=['GET'])
 def event_detail(address):
     event = controllers.get_response_event(address)
     return jsonify(vars(event))
 
 
-@app.route("/user/<address>", methods=['GET'])
+@app.route("/api/user/<address>", methods=['GET'])
 def user(address):
     type = request.args.get('type')
     if not type:
@@ -89,6 +90,14 @@ def user(address):
     else:
         return jsonify(
                 error=f"Server does not support '{type}'"), 400
+
+
+@app.route("/api/list_tickets/<user_address>", methods=['GET'])
+def list_tickets(user_address):
+    user_address=user_address.lstrip(forge_did.PREFIX)
+    tickets = controllers.list_user_tickets(user_address)
+    res= utils.chunks(tickets, 3)
+    return jsonify(res)
 
 
 if __name__ == '__main__':

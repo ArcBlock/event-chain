@@ -4,6 +4,8 @@ from forge_sdk import protos as forge_protos, utils as forge_utils
 
 from forge_symposia.server import protos
 from forge_symposia.server.app import sql_db as db
+from forge_symposia.server import env
+from flask import url_for
 
 
 class DBAssetState(db.Model):
@@ -107,15 +109,16 @@ class ResponseEvent:
         self.issuer = event_state.issuer
         self.limit = event_state.limit
         self.description = event_state.description
+        self.detail_page = f'{env.SERVER_HOST}{url_for("event_detail", address=self.address)}'
 
 
 class TicketState:
     def __init__(self, ticket_state, event_state):
-        self.title = ticket_state.title
-        self.start_time = ticket_state.start_time
-        self.end_time = ticket_state.end_time
-        self.location = ticket_state.location
-        self.img_url = ticket_state.img_url
+        self.title = event_state.title
+        self.start_time = event_state.start_time
+        self.end_time = event_state.end_time
+        self.location = event_state.location
+        self.img_url = event_state.img_url
         self.address = ticket_state.address
         self.issuer = ticket_state.issuer
 
