@@ -58,7 +58,7 @@ consume_ticket = auth_component.create('consume_ticket',
 
 
 @consume_ticket.route('/status', methods=['POST'])
-def consume_ticket():
+def consume():
     wallet_res = forge_did.WalletResponse(request.get_json())
     tx = controllers.build_consume_ticket_tx(
             wallet_res.get_origin_tx(),
