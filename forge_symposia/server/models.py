@@ -1,11 +1,11 @@
 import json
 
+from flask import url_for
 from forge_sdk import protos as forge_protos, utils as forge_utils
 
+from forge_symposia.server import env
 from forge_symposia.server import protos
 from forge_symposia.server.app import sql_db as db
-from forge_symposia.server import env
-from flask import url_for
 
 
 class DBAssetState(db.Model):
@@ -104,12 +104,12 @@ class ResponseEvent:
         self.img_url = event_state.img_url
         self.details = event_state.details
         self.price = forge_utils.from_unit(
-            forge_utils.biguint_to_int(event_state.price))
+                forge_utils.biguint_to_int(event_state.price))
         self.address = event_state.address
         self.issuer = event_state.issuer
         self.limit = event_state.limit
         self.description = event_state.description
-        self.detail_page = f'{env.SERVER_HOST}{url_for("event_detail", address=self.address)}'
+
 
 
 class TicketState:
@@ -119,8 +119,12 @@ class TicketState:
         self.end_time = event_state.end_time
         self.location = event_state.location
         self.img_url = event_state.img_url
+        self.consume_tx = forge_utils.multibase_b58encode(
+            event_state.consume_tx.SerializeToString()) if \
+            event_state.consume_tx else None
+
         self.address = ticket_state.address
         self.issuer = ticket_state.issuer
 
         self.price = forge_utils.from_unit(
-            forge_utils.biguint_to_int(event_state.price))
+                forge_utils.biguint_to_int(event_state.price))

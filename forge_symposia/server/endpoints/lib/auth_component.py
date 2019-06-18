@@ -23,37 +23,38 @@ def create(operation,
     @bp.route('/auth', methods=['GET', 'POST'])
     def auth():
         token = request.args.get('_t_')
+        app_params = {
+            'action': 'responseAuth',
+            'chain_host': env.CHAIN_HOST,
+            'app_addr': env.APP_ADDR,
+            'app_pk': env.APP_PK,
+            'app_sk': env.APP_SK,
+            'chain_id': forge.config.chain_id,
+            'chain_version': forge.rpc.get_chain_info().info.version,
+            'token_symbol': forge.config.symbol,
+            'decimals': forge.config.decimals,
+        }
 
         if request.method == 'GET':
             user_did = request.args.get('userDid')
+            app_params['user_did']=user_did
+            app_params['url'] = utils.server_url(
+                    f'/api/did/{operation}/auth?_t_={token}')
             user_pk = request.args.get('userPk')
             utils.mark_token_status(token, 'scanned')
-            params = {
-                'url': utils.server_url(
-                        f'/api/did/{operation}/auth?_t_={token}'),
-                'action': 'responseAuth',
-                'chain_host': env.CHAIN_HOST,
-                'app_addr': env.APP_ADDR,
-                'app_pk': env.APP_PK,
-                'app_sk': env.APP_SK,
-                'user_did': user_did,
-                'chain_id': forge.config.chain_id,
-                'chain_version': forge.rpc.get_chain_info().info.version,
-                'token_symbol': forge.config.symbol,
-                'decimals': forge.config.decimals,
 
-            }
             user_params = get_handler(token=token,
                                       user_did=user_did,
                                       user_pk=user_pk,
                                       request=request)
 
-            return utils.send_did_request(**params, **user_params)
+            return utils.send_did_request(**app_params, **user_params)
 
         if request.method == 'POST':
             wallet_res = forge_did.WalletResponse(request.get_json())
             response_data = post_handler(token=token,
-                                         wallet_res=wallet_res)
+                                         wallet_res=wallet_res,
+                                         app_params=app_params)
             logger.debug(jsonify(response_data))
             return jsonify(response_data)
 

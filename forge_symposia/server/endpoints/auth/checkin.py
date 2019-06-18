@@ -1,10 +1,10 @@
+import logging
+
 from forge_sdk import did as forge_did, utils as forge_utils
 
 from forge_symposia.server import utils
-from forge_symposia.server.endpoints.lib import auth_component
 from forge_symposia.server.app import forge
-import logging
-
+from forge_symposia.server.endpoints.lib import auth_component
 
 
 def get_handler(**args):

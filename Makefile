@@ -31,6 +31,7 @@ travis-init: add_precommit_hook
 
 install:
 	@echo "Install software required for this repo..."
+	@pip install -r requirements.txt
 
 dep:
 	@echo "Install dependencies required for this repo..."

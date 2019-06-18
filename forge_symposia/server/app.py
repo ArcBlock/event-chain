@@ -22,8 +22,8 @@ def register_blueprints(application):
     from forge_symposia.server import endpoints as ep
     application.register_blueprint(ep.login)
     application.register_blueprint(ep.checkin)
-    application.register_blueprint(ep.payment)
     application.register_blueprint(ep.buy_ticket)
+    application.register_blueprint(ep.consume_ticket)
 
 
 @app.before_request

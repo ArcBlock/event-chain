@@ -6,3 +6,5 @@ eve
 python-dotenv
 pyjwt
 requests
+forge-python-sdk
+
