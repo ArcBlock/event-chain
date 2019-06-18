@@ -1,5 +1,7 @@
-python-dotenv
-requests
-pyjwt
+eve
 Flask==0.12.4
 Flask-SQLAlchemy==2.1
+python-dotenv
+pyjwt
+requests
+
