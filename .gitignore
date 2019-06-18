@@ -13,3 +13,5 @@ dist/
 forge_event_chain.egg-info/
 protocols/event_chain/event_chain/
 protocols/event_chain/event_chain/beams/Elixir.ForgeAbi.GeneralTicket.beam
+
+__pycache__/

@@ -2,14 +2,10 @@ import base64
 import logging
 import os
 
-from dotenv import find_dotenv, load_dotenv
-
 from forge_symposia.server.forge import forge
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger('server-env')
-
-load_dotenv(find_dotenv())
 
 SERVER_HOST = os.getenv('SERVER_HOST')
 CHAIN_HOST = os.getenv('REACT_APP_CHAIN_HOST')

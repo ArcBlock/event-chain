@@ -14,7 +14,6 @@ import Button from '@material-ui/core/Button';
 import Layout from '../components/layout';
 import api from "../libs/api";
 import useAsync from "react-use/lib/useAsync";
-import useToggle from "react-use/lib/useToggle";
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 
 
@@ -94,7 +93,7 @@ export default function EventsPage() {
 }
 const Main = styled.main`
   margin: 100px 100px 100px;
-  
+
 
   a {
     color: ${props => props.theme.colors.green};
@@ -122,14 +121,14 @@ const Main = styled.main`
     align-items: center;
 
     .demo {
-      width: 30%; 
-      
+      width: 30%;
+
       .event-pic {
          height: 140px;
        }
     }
   }
-  
-  
+
+
 
 `;

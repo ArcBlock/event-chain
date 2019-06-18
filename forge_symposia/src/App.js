@@ -4,12 +4,7 @@ import {createGlobalStyle, ThemeProvider} from 'styled-components';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {BrowserRouter as Router, Route, Switch, withRouter} from 'react-router-dom';
 
-import HomePage from './pages/index';
 import ProfilePage from './pages/profile';
-import PaymentPage from './pages/payment';
-import AppPage from './pages/application';
-import BlockPage from './pages/blocks';
-import ChainPage from './pages/chain';
 import EventsPage from './pages/events';
 import EventDetailPage from './pages/event_detail'
 
