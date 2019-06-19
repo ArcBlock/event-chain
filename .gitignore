@@ -1,5 +1,6 @@
 .tmp.mk
 node_modules
+yarn-error.log
 .idea
 .DS_Store
 **/flask_session/
