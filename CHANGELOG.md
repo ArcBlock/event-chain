@@ -1,3 +1,10 @@
+## 0.28.1 (June 19, 2019)
+
+1. upgrade forge sdk to 0.30.x
+1. upgrade material ui to 4.x
+1. fix self request error in server: add `threaded=True` when server start;
+1. lock some python requirments.
+
 ## 0.28.0 (June 17, 2019)
 
 
