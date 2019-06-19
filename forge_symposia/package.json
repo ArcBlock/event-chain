@@ -58,6 +58,7 @@
     "react-scripts": "3.0.1",
     "react-use": "^9.1.2",
     "serverless-http": "^2.0.2",
+    "shelljs": "^0.8.3",
     "store": "^2.0.12",
     "styled-components": "^4.2.0"
   },
@@ -92,7 +93,6 @@
     ]
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
     "eslint": "5.16.0",
     "eslint-config-airbnb": "17.1.0",
     "eslint-plugin-import": "^2.14.0",

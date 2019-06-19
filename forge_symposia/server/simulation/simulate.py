@@ -18,7 +18,7 @@ def simulate():
 
     events = data.get('events')
 
-    test_user = forge.rpc.create_wallet(moniker='alice', passphrase='abcd1234')
+    test_user = forge.rpc.create_wallet(moniker=os.environ.get('MOCK_MONIKER'), passphrase=os.environ.get('MOCK_PASSPHRASE'))
 
     logger.info("Creating Events...")
     for event in events:

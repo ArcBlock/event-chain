@@ -1,24 +1,26 @@
 /* eslint-disable no-console */
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({path: path.resolve(path.join('..', 'forge_symposia', '.env'))});
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-const { fromJSON } = require('@arcblock/forge-wallet');
-const { wallet, client } = require('../api/libs/auth');
+const GraphqlClient = require('@arcblock/graphql-client');
+const { fromSecretKey } = require('@arcblock/forge-wallet');
 
-const appWallet = fromJSON(wallet);
+const client = new GraphqlClient('http://localhost:8210/api');
+const appWallet = fromSecretKey(`0x${process.env.REACT_APP_APP_SK}`);
 
 (async () => {
   try {
     const res = await client.sendDeclareTx({
       tx: {
         itx: {
-          moniker: 'Arcblock',
+          moniker: process.env.MOCK_MONIKER,
         },
       },
       wallet: appWallet,
     });
 
-    console.log('Application wallet declared', wallet);
+    console.log('Application wallet declared', appWallet);
     console.log('Application wallet declared', res);
     process.exit(0);
   } catch (err) {
