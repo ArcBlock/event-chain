@@ -67,9 +67,8 @@ def payments():
 @app.route("/api/list_events", methods=['GET'])
 def list_event():
     all_events = controllers.list_events()
-    event_lists = utils.chunks(all_events, 3)
 
-    return jsonify(event_lists)
+    return jsonify(controllers.list_events())
 
 
 @app.route("/api/detail/<address>", methods=['GET'])
