@@ -20,6 +20,7 @@ import Layout from '../components/layout';
 import useAsync from 'react-use/lib/useAsync';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import PageHeader from '../components/page_header';
+import Ticket from '../components/ticket';
 
 async function fetchEventList() {
   return await Promise.all([api.get('/api/list_events')]);
@@ -56,27 +57,16 @@ const renderEvents = events => {
                   <Typography color="textSecondary" component="p">
                     <CalendarToday />{' '}
                     <span>
-                      {moment(event.start_time).format('dd, MMM DD, YYYY')}
+                      {moment(new Date(event.start_time)).format('dd, MMM DD, YYYY')}
                     </span>
                   </Typography>
                 </div>
                 <hr />
-                <nav className="level">
-                  <div className="level-item has-text-centered">
-                    <div>
-                      <p className="heading">Tickets</p>
-                      <p className="title">
-                        {event.num_created}/{event.limit}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="level-item has-text-centered">
-                    <div>
-                      <p className="heading">Price</p>
-                      <p className="title">{event.price} TBA</p>
-                    </div>
-                  </div>
-                </nav>
+                <Ticket
+                  price={event.price}
+                  limit={event.limit}
+                  numCreated={event.num_created}
+                />
               </CardContent>
               <CardActions className="footer">
                 <Button
@@ -85,7 +75,7 @@ const renderEvents = events => {
                   color="primary"
                   fullWidth
                 >
-                  Details
+                  DETAILS
                 </Button>
               </CardActions>
             </Card>
@@ -156,37 +146,6 @@ const Main = styled.main`
 
     .details > p > svg {
       margin-right: 0.5rem;
-    }
-
-    .level {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .level-item:not(.is-narrow) {
-        flex-grow: 1;
-      }
-    }
-
-    .level-item {
-      align-items: center;
-      display: flex;
-      flex-basis: auto;
-      flex-grow: 0;
-      flex-shrink: 0;
-      justify-content: center;
-    }
-
-    .has-text-centered {
-      text-align: center !important;
-    }
-
-    .heading {
-      display: block;
-      font-size: 11px;
-      letter-spacing: 1px;
-      margin-bottom: 5px;
-      text-transform: uppercase;
     }
 
     .title {

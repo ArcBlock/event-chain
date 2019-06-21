@@ -1,24 +1,24 @@
 /* eslint-disable react/jsx-one-expression-per-line */
-
 import React from 'react';
 import styled from 'styled-components';
-
-import Typography from '@material-ui/core/Typography';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import useToggle from 'react-use/lib/useToggle';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
-
-import Layout from '../components/layout';
-import api from '../libs/api';
 import useAsync from 'react-use/lib/useAsync';
+
+import useToggle from 'react-use/lib/useToggle';
+import Typography from '@material-ui/core/Typography';
+import LocationOn from '@material-ui/icons/LocationOn';
+import CalendarToday from '@material-ui/icons/CalendarToday';
+import HourglassEmpty from '@material-ui/icons/HourglassEmpty';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
+
+import moment from 'moment';
 import qs from 'querystring';
 import Auth from '@arcblock/react-forge/lib/Auth';
+
+import api from '../libs/api';
+import Layout from '../components/layout';
 import { onAuthError } from '../libs/auth';
-import PageHeader from '../components/page_header';
+import { Grid, Button } from '@material-ui/core';
+import Ticket from '../components/ticket';
 
 async function fetchEventDetail(event_address) {
   return await api.get(`/api/detail/${event_address}`);
@@ -46,42 +46,62 @@ export default function EventDetailPage() {
       </Layout>
     );
   }
-  const x = state.value.data;
+  const event = state.value.data;
 
   return (
     <Layout title="Home">
       <Main>
-        <PageHeader title={x.title} />
-        <Card key={x.title} className="demo">
-          <CardMedia className="event-pic" image={x.img_url} title={x.title} />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {x.title}
+        <div className="card-header">
+          <img
+            style={{ width: '100%', height: '540px' }}
+            src={event.img_url}
+            alt={event.title}
+          />
+        </div>
+        <Grid container className="card-content">
+          <Grid item xs={8}>
+            <Typography variant="h3">{event.title}</Typography>
+            <Typography className="subtitle" variant="subtitle1">
+              Created by XXX ( Account: {event.issuer} )
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Start Time: {x.start_time}
+            <Typography className="content" variant="body1">
+              {event.details}
             </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Location: {x.location}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Details: {x.details}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" component="p">
-              Availiable Tickets: {x.limit - x.num_created}/{x.limit}
-            </Typography>
-          </CardContent>
-          <CardActions>
-            <Button
-              component="a"
-              onClick={() => toggle()}
-              size="small"
-              color="primary"
-            >
-              Buy Ticket
-            </Button>
-          </CardActions>
-        </Card>
+          </Grid>
+          <Grid item xs={4}>
+            <Grid item>
+              <Ticket
+                price={event.price}
+                numCreated={event.num_created}
+                limit={event.limit}
+              />
+              <hr />
+            </Grid>
+            <Grid item className="date-geo">
+              <Typography color="textSecondary" component="p">
+                <LocationOn /> {event.location}
+              </Typography>
+              <Typography color="textSecondary" component="p">
+                <CalendarToday />{' '}
+                <span>
+                  {moment(new Date(event.start_time)).format('dd, MMM DD, YYYY')}
+                </span>
+              </Typography>
+              <Typography color="textSecondary" component="p">
+                <HourglassEmpty />{' '}
+                <span>{moment(new Date(event.end_time)).format('dd, MMM DD, YYYY')}</span>
+              </Typography>
+            </Grid>
+            <Grid item className="action">
+              <Button variant="contained" color="primary" fullWidth>
+                Buy Ticket
+              </Button>
+              <Button variant="contained" color="primary" fullWidth>
+                Join Event
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
       </Main>
       {open && (
         <Auth
@@ -109,16 +129,56 @@ const Main = styled.main`
     text-decoration: none;
   }
 
-  .demos {
-    display: flex;
-    justify-content: space-between;
-    dalign-items: center;
-
-    .demo {
-      width: 30%;
+  .card-header {
+    img {
+      width: 100%;
+      height: 0.6rem;
+      border-radius: 0.4rem 0.4rem 0 0;
     }
   }
-  .event-pic {
-    height: 540px;
+
+  .card-content {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+
+    h3 {
+      font-size: 2.5rem;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+    }
+
+    .date-geo {
+      margin-top: 1.5rem;
+    }
+
+    .date-geo > p {
+      display: flex;
+      align-items: center;
+
+      :not(:last-child) {
+        margin-bottom: 1rem;
+      }
+    }
+
+    .date-geo > p > svg {
+      margin-right: 0.5rem;
+    }
+
+    .action {
+      margin-top: 1.5rem;
+    }
+
+    .action> button: not(: last-child) {
+      margin-bottom: 1.5rem;
+    }
+  }
+
+  hr {
+    background-color: #ecf0f1;
+    border: none;
+    display: block;
+    height: 2px;
   }
 `;
