@@ -31,7 +31,6 @@ def before_request():
     g.logger = logging.getLogger('app')
     g.logger.setLevel(level=logging.DEBUG)
 
-
 @app.route("/api/session", methods=['GET', 'POST'])
 @jwt_required
 def session():
@@ -102,4 +101,4 @@ def list_tickets(user_address):
 
 if __name__ == '__main__':
     register_blueprints(app)
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
