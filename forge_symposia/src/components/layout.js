@@ -23,7 +23,7 @@ export default function Layout({ title, children, contentOnly }) {
           <Header />
         </Container>
       </AppBar>
-      <Container style={{ minHeight: '60vh' }} maxWidth="lg">{children}</Container>
+      <Container className="container">{children}</Container>
       <Footer />
     </Div>
   );
@@ -45,4 +45,8 @@ const Div = styled.div`
   display: flex;
   flex-direction: column;
   background: #fbfbfb;
+
+  .container {
+    margin: 100px auto 100px;
+  }
 `;

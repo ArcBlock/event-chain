@@ -15,10 +15,11 @@ import Grid from '@material-ui/core/Grid';
 import CalendarToday from '@material-ui/icons/CalendarToday';
 import LocationOn from '@material-ui/icons/LocationOn';
 
-import Layout from '../components/layout';
 import api from '../libs/api';
+import Layout from '../components/layout';
 import useAsync from 'react-use/lib/useAsync';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
+import PageHeader from '../components/page_header';
 
 async function fetchEventList() {
   return await Promise.all([api.get('/api/list_events')]);
@@ -120,22 +121,13 @@ export default function EventsPage() {
   return (
     <Layout title="Home">
       <Main>
-        <Typography
-          component="h2"
-          variant="h4"
-          className="page-header"
-          color="textPrimary"
-        >
-          Welcome to Forge Symposia!
-        </Typography>
+        <PageHeader title="Welcome to Forge Symposia!" />
         {renderEvents(eventList)}
       </Main>
     </Layout>
   );
 }
 const Main = styled.main`
-  margin: 100px 0 100px;
-
   hr {
     background-color: #ecf0f1;
     border: none;
@@ -147,14 +139,6 @@ const Main = styled.main`
   a {
     color: ${props => props.theme.colors.green};
     text-decoration: none;
-  }
-
-  .page-header {
-    margin-bottom: 20px;
-  }
-
-  .page-description {
-    margin-bottom: 30px;
   }
 
   .event-content {
