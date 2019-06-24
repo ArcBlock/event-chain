@@ -3,6 +3,11 @@ import React from 'react';
 import styled from 'styled-components';
 import useAsync from 'react-use/lib/useAsync';
 
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import useToggle from 'react-use/lib/useToggle';
 import Typography from '@material-ui/core/Typography';
 import LocationOn from '@material-ui/icons/LocationOn';
@@ -23,6 +28,46 @@ import Ticket from '../components/ticket';
 async function fetchEventDetail(event_address) {
   return await api.get(`/api/detail/${event_address}`);
 }
+
+const rendParticipants = participants => {
+  participants = [
+    {
+      id: '96CB51B4D71DDBE081BA65F88A8386E6BF406A79A598659AC794A2F8E1F30BE6',
+      join_time: 'Fri, Apr 26, 2019',
+    },
+  ];
+
+  return (
+    <Grid container className="participants">
+      <Grid item xs={12}>
+        <Typography variant="h4">How Many People Have Tried?</Typography>
+        <hr />
+        <Typography className="subtitle" variant="subtitle1">
+          Not all attempts are created equal. Click to see if that purchase
+          succeeded.
+        </Typography>
+        <Table className="participants-list">
+          <TableHead>
+            <TableRow>
+              <TableCell align="center">Hash</TableCell>
+              <TableCell align="center">Time</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {participants.map(participant => (
+              <TableRow key={participant.id}>
+                <TableCell component="th" scope="row" align="left">
+                  <a href="#">{participant.id}</a>
+                </TableCell>
+                <TableCell align="center">{participant.join_time}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Grid>
+    </Grid>
+  );
+};
 
 export default function EventDetailPage() {
   const params = qs.parse(window.location.search.slice(1));
@@ -84,12 +129,16 @@ export default function EventDetailPage() {
               <Typography color="textSecondary" component="p">
                 <CalendarToday />{' '}
                 <span>
-                  {moment(new Date(event.start_time)).format('dd, MMM DD, YYYY')}
+                  {moment(new Date(event.start_time)).format(
+                    'dd, MMM DD, YYYY'
+                  )}
                 </span>
               </Typography>
               <Typography color="textSecondary" component="p">
                 <HourglassEmpty />{' '}
-                <span>{moment(new Date(event.end_time)).format('dd, MMM DD, YYYY')}</span>
+                <span>
+                  {moment(new Date(event.end_time)).format('dd, MMM DD, YYYY')}
+                </span>
               </Typography>
             </Grid>
             <Grid item className="action">
@@ -102,6 +151,7 @@ export default function EventDetailPage() {
             </Grid>
           </Grid>
         </Grid>
+        {rendParticipants()}
       </Main>
       {open && (
         <Auth
@@ -145,10 +195,6 @@ const Main = styled.main`
       font-size: 2.5rem;
     }
 
-    .subtitle {
-      margin-top: 10px;
-    }
-
     .date-geo {
       margin-top: 1.5rem;
     }
@@ -170,7 +216,7 @@ const Main = styled.main`
       margin-top: 1.5rem;
     }
 
-    .action> button: not(: last-child) {
+    .action>button: not(: last-child) {
       margin-bottom: 1.5rem;
     }
   }
@@ -180,5 +226,25 @@ const Main = styled.main`
     border: none;
     display: block;
     height: 2px;
+    margin: 1.5rem 0;
+  }
+
+  .subtitle {
+    margin-top: 10px;
+    color: rgb(90, 103, 105);
+  }
+
+  .participants {
+    margin-top: 2rem;
+
+    .participants-list {
+      margin-top: 1.5rem;
+
+      thead th {
+        color: rgb(43, 60, 78);
+        font-weight: bold;
+        font-size: 1rem;
+      }
+    }
   }
 `;
