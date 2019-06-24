@@ -195,6 +195,10 @@ const Main = styled.main`
       font-size: 2.5rem;
     }
 
+    .content {
+      margin-top: 1.5rem;
+    }
+
     .date-geo {
       margin-top: 1.5rem;
     }
