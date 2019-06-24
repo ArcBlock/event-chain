@@ -29,6 +29,7 @@ export default function EventDetailPage() {
     const params = qs.parse(window.location.search.slice(1));
     const state = useAsync(() => fetchEventDetail(params.event_address));
     const [open, toggle] = useToggle(false);
+    const [consume_open, consume_toggle] = useToggle(false);
 
     if (state.loading || !state.value) {
         return (
@@ -81,6 +82,9 @@ export default function EventDetailPage() {
                         <Button component="a" onClick={() => toggle()} size="small" color="primary">
                             Buy Ticket
                         </Button>
+                        <Button component="a" onClick={() => consume_toggle()} size="small" color="primary">
+                            Use Ticket
+                        </Button>
                     </CardActions>
                 </Card>
             </Main>
@@ -98,6 +102,23 @@ export default function EventDetailPage() {
                         scan: 'Pay to buy ticket for this event',
                         confirm: 'Confirm payment on your ABT Wallet',
                         success: 'You have successfully paid!',
+                    }}
+                />
+            )}
+            {consume_open && (
+                <Auth
+                    responsive
+                    extraParams={{ event_address: params.event_address }}
+                    action="consume_ticket"
+                    checkFn={api.get}
+                    onError={onAuthError}
+                    onClose={() => consume_toggle()}
+                    onSuccess={() => window.location.reload()}
+                    messages={{
+                        title: 'Use this Ticket',
+                        scan: 'Confirm to use ticket for this event',
+                        confirm: 'Confirm using ticket on your ABT Wallet',
+                        success: 'You have successfully used the ticket!',
                     }}
                 />
             )}

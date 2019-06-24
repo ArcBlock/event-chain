@@ -29,7 +29,7 @@ def post_handler(**args):
     new_tx = controllers.update_tx_multisig(
             tx=forge_utils.parse_to_proto(
                     forge_utils.multibase_b58decode(ticket.consume_tx),
-                    forge_protos.ConsumeAssetTx),
+                    forge_protos.Transaction),
             signer=wallet_res.get_address(),
             pk=wallet_res.get_user_pk(),
             data=forge_utils.encode_to_any(
@@ -37,15 +37,15 @@ def post_handler(**args):
                     asset_address,
             )
     )
-
-    utils.mark_token_status(args, 'succeed')
+    token = args.get('token')
+    utils.mark_token_status(token, 'succeed')
     params = {'status': 0,
               'tx': new_tx,
               'url': utils.server_url(
                       f'/api/did/consume_asset/consume?_t_={token}&ticket_address={ticket.address}'),
               'description': 'Confirm to use the ticket.',
-              'action': 'responseAuth',
               'workflow': 'use-ticket',
+              'did':wallet_res.get_address(),
               }
     return json.dumps(utils.send_did_request(request_type='signature',
                                              **params,

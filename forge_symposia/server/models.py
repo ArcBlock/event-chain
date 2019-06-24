@@ -111,7 +111,6 @@ class ResponseEvent:
         self.description = event_state.description
 
 
-
 class TicketState:
     def __init__(self, ticket_state, event_state):
         self.title = event_state.title

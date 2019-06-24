@@ -31,7 +31,6 @@ def get_ticket_state(address):
         logger.error(f'Fail to get asset state for event {address}')
 
 
-
 def gen_consume_tx(wallet, token=None):
     consume_itx = forge_protos.ConsumeAssetTx(issuer=wallet.address)
     tx = forge.rpc.build_tx(itx=forge_utils.encode_to_any(
