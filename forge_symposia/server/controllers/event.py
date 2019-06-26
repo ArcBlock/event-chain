@@ -6,7 +6,7 @@ from forge_sdk import protos as forge_protos, utils as forge_utils
 
 from forge_symposia.server import models
 from forge_symposia.server import protos, utils
-from forge_symposia.server.app import forge
+from forge_symposia.server.forge import forge
 from forge_symposia.server.controllers import lib
 
 logger = logging.getLogger('controller-event')

@@ -33,8 +33,7 @@ def get_ticket_state(address):
 
 def gen_consume_tx(wallet, token=None):
     consume_itx = forge_protos.ConsumeAssetTx(issuer=wallet.address)
-    tx = forge.rpc.build_tx(itx=forge_utils.encode_to_any(
-            'fg:t:consume_asset',
-            consume_itx), wallet=wallet, token=token,
-            chain_id=forge.config.chain_id)
+    logger.debug(str(forge.rpc))
+    tx = forge.rpc.build_signed_tx(itx=forge_utils.encode_to_any(
+            'fg:t:consume_asset', consume_itx), wallet=wallet, token=token)
     return tx.SerializeToString()

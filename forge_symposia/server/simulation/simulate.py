@@ -4,7 +4,7 @@ import os
 import uuid
 
 from forge_symposia.server import controllers
-from forge_symposia.server.app import forge
+from forge_symposia.server.forge import forge
 
 logger = logging.getLogger('ec-simulator')
 
