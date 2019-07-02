@@ -1,6 +1,6 @@
 from os import environ
-from os import path
 from forge_symposia.server import env
+from forge_symposia.server import models
 
 MONGO_URI = environ.get(
         'MONGO_URI') or 'mongodb://127.0.0.1:27017/forge-python-starter'

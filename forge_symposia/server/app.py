@@ -35,15 +35,15 @@ def before_request():
 @app.route("/api/session", methods=['GET', 'POST'])
 @jwt_required
 def session():
+    from forge_symposia.server import models
     did = get_jwt_identity()
-    res = requests.get(url=utils.server_url(f'/user/{did}'))
-    if res.status_code == 200:
-        data = res.json()
+    user = models.DBUser.query.filter_by(did=did).first()
+    if user:
         return jsonify(user={
-            'email': data.get('email'),
-            'mobile': data.get('mobile', ''),
-            'did': data.get('did'),
-            'name': data.get('name'),
+            'email': user.email,
+            'mobile': user.mobile,
+            'did': user.did,
+            'name': user.name,
         })
     else:
         return '{}'
@@ -102,4 +102,5 @@ def list_tickets(user_address):
 
 if __name__ == '__main__':
     register_blueprints(app)
+    logging.info("DB has been initialized.")
     app.run(host='0.0.0.0', debug=True)

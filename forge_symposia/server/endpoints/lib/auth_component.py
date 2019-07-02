@@ -1,4 +1,4 @@
-import json
+import logging
 import secrets
 
 from flask import Blueprint
@@ -9,9 +9,8 @@ from forge_sdk import utils as forge_utils
 from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.app import forge
-import logging
 
-logger=logging.getLogger('auth-lib')
+logger = logging.getLogger('auth-lib')
 
 
 def create(operation,
@@ -37,7 +36,7 @@ def create(operation,
 
         if request.method == 'GET':
             user_did = request.args.get('userDid')
-            app_params['user_did']=user_did
+            app_params['user_did'] = user_did
             app_params['url'] = utils.server_url(
                     f'/api/did/{operation}/auth?_t_={token}')
             user_pk = request.args.get('userPk')
@@ -60,7 +59,7 @@ def create(operation,
 
     @bp.route('/token', methods=['GET'])
     def token():
-        event_address=request.args.get('event_address')
+        event_address = request.args.get('event_address')
         return get_token(operation, event_address)
 
     @bp.route('/status', methods=['GET'])
@@ -76,40 +75,35 @@ def create(operation,
 
 def get_token(endpoint, event_address):
     token = secrets.token_hex(8)
-    response = utils.mark_token_status(token, 'created')
+    utils.mark_token_status(token, 'created')
 
-    default=utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}')
+    default = utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}')
 
     url = forge_utils.did_url(
-            url=default if not event_address else utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}&event_address={event_address}'),
+            url=default if not event_address else utils.server_url(
+                f'/api/did/{endpoint}/auth'
+                f'?_t_={token}&event_address={event_address}'),
             action='requestAuth',
             app_pk=forge_utils.multibase_b58encode(env.APP_PK),
             app_addr=env.APP_ADDR)
 
-    if response.status_code == 201:
-        return jsonify(token=token, url=url)
-    else:
-        return jsonify(error="error in getting token")
+    return jsonify(token=token, url=url)
 
 
 def check_status():
-    token = request.args.get('_t_')
-    response = utils.mark_token_status(token)
-    data = response.json()
-    if response.status_code == 200:
-        if data.get('sessionToken'):
-            return jsonify(token=data.get('token'),
-                           status=data.get('status'),
-                           sessionToken=data.get('sessionToken'))
-        else:
-            return jsonify(token=data.get('token'),
-                           status=data.get('status'))
+    token = utils.check_token_status(request.args.get('_t_'))
+    if not token:
+        return jsonify(error="Token does not exist.")
+    elif token.session_token:
+        return jsonify(token=token.token,
+                       status=token.status,
+                       sessionToken=token.session_token)
     else:
-        logger.error(str(response))
-        return jsonify(error="error in getting status")
+        return jsonify(token=token.token,
+                       status=token.status)
 
 
 def token_timeout():
     token = request.args.get('_t_')
     utils.mark_token_status(token, 'expired')
-    return json.dumps({'error': 'error'})
+    return jsonify(msg="Token has been marked as expired.")

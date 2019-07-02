@@ -1,9 +1,6 @@
 import json
 
-from flask import url_for
 from forge_sdk import protos as forge_protos, utils as forge_utils
-
-from forge_symposia.server import env
 from forge_symposia.server import protos
 from forge_symposia.server.app import sql_db as db
 
@@ -41,6 +38,20 @@ class DBAcquireAssetTx(db.Model):
 
     def __repr__(self):
         return f'<Tx {self.hash}>'
+
+class DBUser(db.Model):
+    __tablename__='ec_user'
+    did=db.Column(db.String(64), primary_key=True)
+    mobile=db.Column(db.String(30), nullable=True)
+    name=db.Column(db.String(20), nullable=True)
+    email=db.Column(db.String(30), nullable=True)
+
+
+class DBToken(db.Model):
+    __tablename__ = 'ec_token'
+    token=db.Column(db.String(20), primary_key=True)
+    status=db.Column(db.String(10), primary_key=False)
+    session_token=db.Column(db.String(20), primary_key=False)
 
 
 class ForgeAssetState:
