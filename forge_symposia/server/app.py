@@ -102,5 +102,7 @@ def list_tickets(user_address):
 
 if __name__ == '__main__':
     register_blueprints(app)
+    with app.app_context():
+        sql_db.create_all()
     logging.info("DB has been initialized.")
     app.run(host='0.0.0.0', debug=True)

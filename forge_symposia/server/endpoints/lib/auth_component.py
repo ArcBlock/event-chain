@@ -31,7 +31,7 @@ def create(operation,
             'chain_id': forge.config.chain_id,
             'chain_version': forge.rpc.get_chain_info().info.version,
             'token_symbol': forge.config.symbol,
-            'decimals': forge.config.decimals,
+            'decimals': forge.config.decimal,
         }
 
         if request.method == 'GET':

@@ -30,7 +30,9 @@ def send_did_request(request_type, **kwargs):
     if request_type == "profile":
         return forge_did.require_profile(**kwargs)
     elif request_type == "signature":
-        return forge_did.require_sig(**kwargs)
+        res = forge_did.require_sig(**kwargs)
+        logger.debug(f'request signature response: {res}')
+        return res
     elif request_type == "asset":
         return forge_did.require_asset(**kwargs)
 

@@ -1,6 +1,7 @@
 import json
 
 from forge_sdk import protos as forge_protos, utils as forge_utils
+
 from forge_symposia.server import protos
 from forge_symposia.server.app import sql_db as db
 
@@ -39,12 +40,19 @@ class DBAcquireAssetTx(db.Model):
     def __repr__(self):
         return f'<Tx {self.hash}>'
 
+
 class DBUser(db.Model):
     __tablename__='ec_user'
     did=db.Column(db.String(64), primary_key=True)
     mobile=db.Column(db.String(30), nullable=True)
     name=db.Column(db.String(20), nullable=True)
     email=db.Column(db.String(30), nullable=True)
+
+    def __init__(self, did, name, email, mobile=None):
+        self.did = did
+        self.mobile = mobile
+        self.name = name
+        self.email = email
 
 
 class DBToken(db.Model):

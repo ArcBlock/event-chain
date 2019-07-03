@@ -101,6 +101,9 @@ upload-pypi:
 
 pypi: package-pypi upload-pypi clean-pypi-build
 
+simulate:
+	@python forge_symposia/server/simulation/simulate.py
+
 include .makefiles/*.mk
 
 .PHONY: build init travis-init install dep pre-build post-build all test doc precommit travis clean watch run bump-version create-pr
