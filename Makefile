@@ -31,6 +31,7 @@ travis-init: add_precommit_hook
 
 install:
 	@echo "Install software required for this repo..."
+	@pip install -r requirements.txt
 
 dep:
 	@echo "Install dependencies required for this repo..."
@@ -99,6 +100,9 @@ upload-pypi:
 	@echo "file uploaded successfully!"
 
 pypi: package-pypi upload-pypi clean-pypi-build
+
+simulate:
+	@python forge_symposia/server/simulation/simulate.py
 
 include .makefiles/*.mk
 

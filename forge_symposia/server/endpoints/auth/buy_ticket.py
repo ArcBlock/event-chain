@@ -48,6 +48,8 @@ def post_handler(**args):
     res = forge.rpc.send_tx(tx)
     if res.hash:
         utils.mark_token_status(token, 'succeed')
+        logger.debug(f"Successfully bought ticket. Hash: " +
+                     f"{res.hash}")
         return {'status': 0,
                 'ticket':ticket_address,
                 'hash': res.hash,
@@ -55,6 +57,8 @@ def post_handler(**args):
                         tx.SerializeToString())}
     else:
         utils.mark_token_status(token, 'error')
+        logger.debug(f"Fail to buy ticket with error: " +
+                     f"{res}")
         return {'error': f"Oops, error code: {res.code}"}
 
 

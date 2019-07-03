@@ -1,36 +1,26 @@
 import logging
 
-import requests
 from forge_sdk import did as forge_did
 
 from forge_symposia.server import env
 from forge_symposia.server import protos
+from forge_symposia.server import models
 
 logger = logging.getLogger('utils')
 
 
-def mark_token_status(token, status=None, sessionToken=None):
-    endpoint = server_url('/token')
-    if status == 'created':
-        return requests.post(url=endpoint,
-                             data={'token': token,
-                                   'status': 'created'})
-    else:
-        response = requests.get(url=f'{endpoint}/{token}')
-        if not status:
-            return response
-        else:
-            info = response.json()
-            if not sessionToken:
-                return requests.patch(url=f'{endpoint}/{info.get("_id")}',
-                                      data={'status': status},
-                                      headers={'If-Match': info.get('_etag')})
-            else:
-                return requests.patch(url=f'{endpoint}/{info.get("_id")}',
-                                      data={'status': status,
-                                            'sessionToken': sessionToken},
-                                      headers={'If-Match': info.get('_etag')})
+def mark_token_status(token, status, session_token=None):
+    from forge_symposia.server.app import sql_db as db
+    new_token = models.DBToken(token=token,
+                               status=status,
+                               session_token=session_token)
+    if not status == 'created':
+        db.session.delete(models.DBToken.query.filter_by(token=token).first())
+    db.session.add(new_token)
+    db.session.commit()
 
+def check_token_status(token):
+    return models.DBToken.query.filter_by(token=token).first()
 
 def server_url(endpoint):
     return env.SERVER_HOST + endpoint
@@ -40,7 +30,9 @@ def send_did_request(request_type, **kwargs):
     if request_type == "profile":
         return forge_did.require_profile(**kwargs)
     elif request_type == "signature":
-        return forge_did.require_sig(**kwargs)
+        res = forge_did.require_sig(**kwargs)
+        logger.debug(f'request signature response: {res}')
+        return res
     elif request_type == "asset":
         return forge_did.require_asset(**kwargs)
 
