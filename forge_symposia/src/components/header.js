@@ -56,11 +56,14 @@ export default function Header() {
             <Button href="/profile" size="large">
               Profile
             </Button>
+            <Button href="/payment" size="large">
+              Payment
+            </Button>
           </React.Fragment>
         )}
       </div>
       <div className="nav-right">
-        <Button href="https://github.com/ArcBlock/forge-react-starter" className="github" target="_blank">
+        <Button href="https://github.com/ArcBlock/forge-dapp-starters" className="github" target="_blank">
           GitHub
         </Button>
         {session.loading && (

@@ -22,8 +22,8 @@ def register_blueprints(application):
     from forge_symposia.server import endpoints as ep
     application.register_blueprint(ep.login)
     application.register_blueprint(ep.checkin)
+    application.register_blueprint(ep.payment)
     application.register_blueprint(ep.buy_ticket)
-    application.register_blueprint(ep.consume_ticket)
 
 
 @app.before_request
@@ -31,19 +31,18 @@ def before_request():
     g.logger = logging.getLogger('app')
     g.logger.setLevel(level=logging.DEBUG)
 
-
 @app.route("/api/session", methods=['GET', 'POST'])
 @jwt_required
 def session():
-    from forge_symposia.server import models
     did = get_jwt_identity()
-    user = models.DBUser.query.filter_by(did=did).first()
-    if user:
+    res = requests.get(url=utils.server_url(f'/user/{did}'))
+    if res.status_code == 200:
+        data = res.json()
         return jsonify(user={
-            'email': user.email,
-            'mobile': user.mobile,
-            'did': user.did,
-            'name': user.name,
+            'email': data.get('email'),
+            'mobile': data.get('mobile', ''),
+            'did': data.get('did'),
+            'name': data.get('name'),
         })
     else:
         return '{}'
@@ -68,9 +67,8 @@ def payments():
 @app.route("/api/list_events", methods=['GET'])
 def list_event():
     all_events = controllers.list_events()
-    event_lists = utils.chunks(all_events, 3)
 
-    return jsonify(event_lists)
+    return jsonify(all_events)
 
 
 @app.route("/api/detail/<address>", methods=['GET'])
@@ -102,7 +100,4 @@ def list_tickets(user_address):
 
 if __name__ == '__main__':
     register_blueprints(app)
-    with app.app_context():
-        sql_db.create_all()
-    logging.info("DB has been initialized.")
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
