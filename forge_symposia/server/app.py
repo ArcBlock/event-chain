@@ -43,14 +43,13 @@ def before_request():
 @jwt_required
 def session():
     did = get_jwt_identity()
-    res = requests.get(url=utils.server_url(f'/user/{did}'))
-    if res.status_code == 200:
-        data = res.json()
+    user = controllers.get_user(did)
+    if user:
         return jsonify(user={
-            'email': data.get('email'),
-            'mobile': data.get('mobile', ''),
-            'did': data.get('did'),
-            'name': data.get('name'),
+            'email': user.email,
+            'mobile': user.mobile,
+            'did': user.did,
+            'name': user.name,
         })
     else:
         return '{}'
@@ -75,7 +74,6 @@ def payments():
 @app.route("/api/list_events", methods=['GET'])
 def list_event():
     all_events = controllers.list_events()
-
     return jsonify(all_events)
 
 
