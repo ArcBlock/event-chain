@@ -14,11 +14,13 @@ from forge_symposia.server.forge import forge
 
 from eve_sqlalchemy.validation import ValidatorSQL
 from eve_sqlalchemy import SQL
-from forge_symposia.server.models import Base
+from forge_symposia.server.models import Base, init_db
+import pathlib
+import os
+
 
 app = Eve(validator=ValidatorSQL, data=SQL)
 jwt = JWTManager(app)
-sql_db = SQLAlchemy(app)
 forge_rpc = forge.rpc
 db = app.data.driver
 Base.metadata.bind = db.engine
@@ -103,6 +105,8 @@ def list_tickets(user_address):
     res= utils.chunks(tickets, 3)
     return jsonify(res)
 
+
+sql_db = init_db(app)
 
 if __name__ == '__main__':
     register_blueprints(app)
