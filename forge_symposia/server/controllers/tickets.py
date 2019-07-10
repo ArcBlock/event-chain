@@ -2,11 +2,13 @@ from forge_symposia.server import models
 from forge_symposia.server.forge import forge
 from forge_symposia.server.controllers import lib
 from forge_sdk import protos as forge_protos, utils as forge_utils
+import requests
+from forge_symposia.server import utils
 
 
 def list_user_tickets(user_address):
-    assets = models.DBAssetState.query.filter_by(owner=user_address).all()
-    tickets = [lib.get_ticket_state(a.address) for a in assets if _is_general_ticket(a.address)]
+    assets = requests.get(utils.server_url('/events?where={"owner":"' +user_address+'"}')).json().get('_items')
+    tickets = [lib.get_ticket_state(a.get('address')) for a in assets if _is_general_ticket(a.get('address'))]
 
     return [vars(ticket) for ticket in tickets]
 
