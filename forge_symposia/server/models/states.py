@@ -3,63 +3,6 @@ import json
 from forge_sdk import protos as forge_protos, utils as forge_utils
 
 from forge_symposia.server import protos
-from forge_symposia.server.app import sql_db as db
-
-
-class DBAssetState(db.Model):
-    __tablename__ = 'asset_state'
-    address = db.Column(db.String(64), primary_key=True)
-    owner = db.Column(db.String(40), nullable=False)
-    genesis_time = db.Column(db.String(64), nullable=False)
-    moniker = db.Column(db.String(64), nullable=False)
-
-    def __repr__(self):
-        return f'<Asset {self.address}>'
-
-
-class DBTx(db.Model):
-    __tablename__ = 'tx'
-    hash = db.Column(db.String(64), primary_key=True)
-    sender = db.Column(db.String(40), nullable=False)
-    time = db.Column(db.String(64), nullable=False)
-    type = db.Column(db.String(20), nullable=False)
-    code = db.Column(db.Integer, nullable=False)
-
-    def __repr__(self):
-        return f'<Tx {self.hash}>'
-
-
-class DBAcquireAssetTx(db.Model):
-    __tablename__ = 'acquire_asset'
-    hash = db.Column(db.String(64), primary_key=True)
-    sender = db.Column(db.String(40), nullable=False)
-    time = db.Column(db.String(64), nullable=False)
-    code = db.Column(db.Integer, nullable=False)
-    assets = db.Column(db.ARRAY(db.String), nullable=False)
-
-    def __repr__(self):
-        return f'<Tx {self.hash}>'
-
-
-class DBUser(db.Model):
-    __tablename__='ec_user'
-    did=db.Column(db.String(64), primary_key=True)
-    mobile=db.Column(db.String(30), nullable=True)
-    name=db.Column(db.String(20), nullable=True)
-    email=db.Column(db.String(30), nullable=True)
-
-    def __init__(self, did, name, email, mobile=None):
-        self.did = did
-        self.mobile = mobile
-        self.name = name
-        self.email = email
-
-
-class DBToken(db.Model):
-    __tablename__ = 'ec_token'
-    token=db.Column(db.String(20), primary_key=True)
-    status=db.Column(db.String(10), primary_key=False)
-    session_token=db.Column(db.String(20), primary_key=False)
 
 
 class ForgeAssetState:
@@ -138,7 +81,7 @@ class TicketState:
         self.location = event_state.location
         self.img_url = event_state.img_url
         self.consume_tx = forge_utils.multibase_b58encode(
-            event_state.consume_tx.SerializeToString()) if \
+                event_state.consume_tx.SerializeToString()) if \
             event_state.consume_tx else None
 
         self.address = ticket_state.address

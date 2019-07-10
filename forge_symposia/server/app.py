@@ -12,17 +12,23 @@ from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.forge import forge
 
-app = Eve()
+from eve_sqlalchemy.validation import ValidatorSQL
+from eve_sqlalchemy import SQL
+from forge_symposia.server.models import Base
+
+app = Eve(validator=ValidatorSQL, data=SQL)
 jwt = JWTManager(app)
 sql_db = SQLAlchemy(app)
 forge_rpc = forge.rpc
+db = app.data.driver
+Base.metadata.bind = db.engine
+db.Model = Base
 
 
 def register_blueprints(application):
     from forge_symposia.server import endpoints as ep
     application.register_blueprint(ep.login)
     application.register_blueprint(ep.checkin)
-    application.register_blueprint(ep.payment)
     application.register_blueprint(ep.buy_ticket)
 
 
