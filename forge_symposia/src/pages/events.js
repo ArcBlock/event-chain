@@ -56,7 +56,7 @@ const renderEvents = events => {
                   <Typography color="textSecondary" component="p">
                     <CalendarToday />{' '}
                     <span>
-                      {moment(event.start_time).format('dd, MMM DD, YYYY')}
+                      {moment(event.start_time).format('ddd, MMM DD, YYYY')}
                     </span>
                   </Typography>
                 </div>
@@ -66,7 +66,7 @@ const renderEvents = events => {
                     <div>
                       <p className="heading">Tickets</p>
                       <p className="title">
-                        {event.num_created}/{event.limit}
+                        {event.limit - event.num_created}/{event.limit}
                       </p>
                     </div>
                   </div>
