@@ -128,19 +128,11 @@ export default function ProfilePage() {
   return (
     <Layout title="Profile">
       <Main>
-        <Grid container spacing={40}>
-          <Grid item xs={12} md={3} className="avatar">
+        <Grid container spacing={9}>
+          <Grid item xs={12} md={4} className="avatar">
             <Avatar size={240} did={state.value.user.did} />
             <Button color="secondary" variant="outlined" onClick={onLogout}>
               Logout
-            </Button>
-            <Button
-              color="primary"
-              variant="outlined"
-              href="/payment"
-              style={{ marginTop: '30px' }}
-            >
-              My Purchase
             </Button>
             {balance.value && balance.value.account && (
               <Button
@@ -200,9 +192,13 @@ export default function ProfilePage() {
             </List>
           </Grid>
         </Grid>
-        <section className="section">
-          <PageHeader title="Tickets" />
-          <div>{ticket_chunks.map(x => renderChunks(x))}</div>
+        <section>
+           <PageHeader title="Tickets" />
+          <Grid container direction="row" spacing={5}>
+            <Grid item xs={12} md={12}>
+            {ticket_chunks.map(x => renderChunks(x))}
+          </Grid>
+          </Grid>
         </section>
       </Main>
       {isOpen && (
@@ -262,11 +258,13 @@ const Main = styled.main`
 
   .demos {
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
+    
     align-items: center;
 
     .demo {
       width: 30%;
+      margin-right: 40px;
 
       .event-pic {
         height: 140px;
