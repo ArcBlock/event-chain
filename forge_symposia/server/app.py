@@ -105,6 +105,22 @@ def list_tickets(user_address):
     return jsonify(res)
 
 
+@app.route("/api/swap", methods=['POST'])
+def swap():
+    try:
+        res = requests.post("http://localhost:8807/swap")
+    except Exception:
+        g.logger.error("Fail to connect to localhost:8807")
+        return jsonify(error="no response from 8807/swap")
+    id = res.json().get('id')
+    if not id:
+        g.logger.errorf("Response does not have a [id] field.")
+    url = f"http://localhost:8807/swap/{id}"
+    g.logger.debug(f'swap url: {url}')
+    res = requests.get(url)
+    return res
+
+
 sql_db = init_db(app)
 
 if __name__ == '__main__':

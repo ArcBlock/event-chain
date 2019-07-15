@@ -24,6 +24,10 @@ async function fetchEventDetail(event_address) {
   return await api.get(`/api/detail/${event_address}`);
 }
 
+async function initSwap() {
+  return await api.post('/api/swap');
+}
+
 export default function EventDetailPage() {
   const params = qs.parse(window.location.search.slice(1));
   const state = useAsync(() => fetchEventDetail(params.event_address));
@@ -73,6 +77,14 @@ export default function EventDetailPage() {
             </Typography>
           </CardContent>
           <CardActions>
+           <Button
+              component="a"
+              onClick={() => initSwap()}
+              size="small"
+              color="primary"
+            >
+              Swap
+            </Button>
             <Button
               component="a"
               onClick={() => toggle()}
