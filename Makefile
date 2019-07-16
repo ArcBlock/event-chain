@@ -9,9 +9,10 @@ CONFIGS=forge forge_release forge_test forge_default
 build:
 	@echo "Building the software..."
 
-init: install dep create_env
+init:
 	@echo "Initializing the repo..."
-	@git submodule update --init --recursive
+	@pip install -r requirements.txt
+	@cd forge_symposia && yarn install
 
 create_env:
 	@pip install virtualenv
@@ -20,7 +21,6 @@ create_env:
 		source /usr/local/bin/virtualenvwrapper.sh; \
 		mkvirtualenv forge-python-sdk; \
 		pip install -r requirements.txt; \
-		pre-commit install; \
 	)
 
 add_precommit_hook:
@@ -102,7 +102,17 @@ upload-pypi:
 pypi: package-pypi upload-pypi clean-pypi-build
 
 simulate:
-	@python forge_symposia/server/simulation/simulate.py
+	@export PYTHONPATH=. && python3.6 forge_symposia/server/simulation/simulate.py
+
+deploy-protocols:
+	@export PYTHONPATH=. && python3.6 protocols/deploy.py
+
+start-server:
+	@export PYTHONPATH=. && python3.6 forge_symposia/server/app.py
+
+start-client:
+	@cd forge_symposia && yarn start:client
+
 
 include .makefiles/*.mk
 
