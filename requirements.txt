@@ -1,9 +1,9 @@
-eve-sqlalchemy
+eve-sqlalchemy==0.7.0
 Flask==0.12.4
 Flask-SQLAlchemy==2.1
 Flask-JWT-Extended==3.18.2
-forge-python-sdk==0.29.0
-eve==0.9.1
+forge-python-sdk
+eve==0.7
 requests==2.18.4
-python-dotenv
-pyjwt
+python-dotenv==0.10.3
+pyjwt==1.7.1

@@ -3,7 +3,7 @@
 ## Requirements
 
 - Node.js >= v10.x
-- Python 3.x
+- Python 3.x or have [conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/macos.html#install-macos-silent) installed
 - A running Blockchain node # by forge-cli
 
 ## Setup
@@ -22,34 +22,24 @@ The `forge_symposia/env_sample` file is a sample.
 
 ### 3. Simulate data
 
-#### 3.1 Generate wallet by SK
-
-``` node.js
-node forge_symposia/tools/declare.js
-```
-
 #### 3.2 Create the protocol on the chain
 
-This step need moderator sk in the chain
+This step needs `MODERATOR_SK` and `MODERATOR_PK` stored in your environment
 
-``` shell
-forge protocol:deploy protocols/event_chain/event_chain/event_chain.itx.json
-```
+```make deploy-protocols```
 
 #### 3.3 Generate mock data
 
-``` bash
-export PYTHONPATH=. && python forge_symposia/server/simulation/simulate.py
-```
+```make simulate```
 
 ### 4. Start server on port 5000 with debug mode
 
 ```bash
-export PYTHONPATH=. && python forge_symposia/server/app.py
+make start-server
 ```
 
 ### 5. Start client on port 3000
 
 ```bash
-yarn start:client
+make start-client
 ```
