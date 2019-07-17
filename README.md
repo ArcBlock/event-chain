@@ -22,6 +22,14 @@ The `forge_symposia/env_sample` file is a sample.
 
 ### 3. Simulate data
 
+#### 3.1 Declare app wallet
+
+This step reads app wallet information from `.env` and declare the wallet on chain
+
+```bash
+node forge_symposia/tools/declare.js
+```
+
 #### 3.2 Create the protocol on the chain
 
 This step needs `MODERATOR_SK` and `MODERATOR_PK` stored in your environment
