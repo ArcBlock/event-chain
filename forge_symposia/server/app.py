@@ -32,6 +32,7 @@ def register_blueprints(application):
     application.register_blueprint(ep.login)
     application.register_blueprint(ep.checkin)
     application.register_blueprint(ep.buy_ticket)
+    application.register_blueprint(ep.consume_ticket)
 
 
 @app.before_request

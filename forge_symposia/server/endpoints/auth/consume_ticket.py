@@ -67,14 +67,12 @@ def consume():
             wallet_res.get_origin_tx(),
             wallet_res.get_signature(),
     )
-    res = forge.rpc.send(tx)
+    res = forge.rpc.send_tx(tx)
 
     base58_tx = forge_utils.multibase_b58encode(tx.SerializeToString())
     if res.hash:
-        return jsonify({'hash': hash,
-                        'tx': base58_tx,
-                        'ticket': request.args.get('ticket_address')})
+        return jsonify(hash=res.hash,
+                    tx=base58_tx,
+                    ticket=request.args.get('ticket_address'))
     else:
-        return jsonify({'error': 'Your ticket might have been '
-                                 'checked out before. '
-                                 'Please wait and try again.'})
+        return jsonify(error= 'whoops! Can not consume required ticket')
