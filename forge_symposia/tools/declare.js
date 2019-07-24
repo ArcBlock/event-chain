@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 const path = require('path');
-require('dotenv').config({path: path.resolve(path.join('.', 'forge_symposia', '.env'))});
+require('dotenv').config({
+  path: path.resolve(path.join('forge_symposia', '.env')),
+});
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 const GraphqlClient = require('@arcblock/graphql-client');
