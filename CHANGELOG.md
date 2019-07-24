@@ -1,3 +1,7 @@
+## 0.30.1 (July 24, 2019)
+
+- chore: change path join method in declare.js
+
 ## 0.30.0 (July 17, 2019)
 
 
