@@ -1,4 +1,4 @@
-# Forge Python Starter
+# EventChain
 
 ## Requirements
 
