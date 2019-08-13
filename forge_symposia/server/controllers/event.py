@@ -8,6 +8,7 @@ from forge_sdk import utils as forge_utils
 from forge_symposia.server import protos, utils
 from forge_symposia.server.controllers import lib
 from forge_symposia.server.forge import forge
+from forge_symposia.server import models
 
 logger = logging.getLogger('controller-event')
 
@@ -23,10 +24,12 @@ def parse_date(str_date):
 
 
 def list_events():
-    res = requests.get(
-            utils.server_url('/events?where={"moniker":"general_event"}'))
+    # res = requests.get(
+    #         utils.server_url('/events?where={"moniker":"general_event"}'))
 
-    addr_list = [factory.get('address') for factory in res.json().get("_items")]
+    # addr_list = [factory.get('address') for factory in res.json().get("_items")]
+    res = models.DBEvent.query.limit(12).all()
+    addr_list=[event.address for event in res]
 
     events = [lib.get_response_event(addr) for addr in addr_list]
     res = [vars(e) for e in events if e.num_created < e.limit]
@@ -34,6 +37,7 @@ def list_events():
 
 
 def create_event_general(wallet, token=None, **kwargs):
+    from forge_symposia.server.app import sql_db as db
     template = json.dumps({
         'id': '{{ id }}',
         'title': kwargs.get('title'),
@@ -66,6 +70,9 @@ def create_event_general(wallet, token=None, **kwargs):
     if forge_utils.is_response_ok(res):
         logger.debug(f'Event hash was received: {res.hash}')
         logger.info(f'Event address: {event_address}')
+        db.session.add(models.DBEvent(address=event_address,
+                       owner=wallet.address))
+        db.session.commit()
         return event_address
     else:
         logger.error(f'Event hash was not generated.')

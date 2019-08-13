@@ -31,3 +31,10 @@ class DBToken(db.Model):
     token = db.Column(db.String(20), primary_key=True)
     status = db.Column(db.String(10), primary_key=False)
     session_token = db.Column(db.String(20), primary_key=False)
+
+
+class DBEvent(db.Model):
+    __bind_key__ = "app_db"
+    __tablename__ = 'ec_event'
+    address = db.Column(db.String(64), primary_key=True)
+    owner = db.Column(db.String(40), nullable=False)
