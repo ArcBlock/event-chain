@@ -58,13 +58,13 @@ upload-pypi:
 pypi: package-pypi upload-pypi clean-pypi-build
 
 simulate:
-	@export PYTHONPATH=. && python3.6 forge_symposia/server/simulation/simulate.py
+	@export PYTHONPATH=. && python forge_symposia/server/simulation/simulate.py
 
 deploy-protocols:
-	@export PYTHONPATH=. && python3.6 protocols/deploy.py
+	@export PYTHONPATH=. && python protocols/deploy.py
 
 run-server:
-	@export PYTHONPATH=. && python3.6 forge_symposia/server/app.py
+	@export PYTHONPATH=. && python forge_symposia/server/app.py
 
 run-client:
 	@cd forge_symposia && yarn start:client

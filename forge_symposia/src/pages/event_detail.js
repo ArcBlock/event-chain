@@ -17,12 +17,26 @@ import useAsync from 'react-use/lib/useAsync';
 import CircularProgress from '@material-ui/core/CircularProgress/CircularProgress';
 import qs from 'querystring';
 import Auth from '@arcblock/react-forge/lib/Auth';
-import { onAuthError } from '../libs/auth';
+import {onAuthError} from '../libs/auth';
 import PageHeader from '../components/page_header';
+import fetchSession from "../hooks/session";
 
 async function fetchEventDetail(event_address) {
   return await api.get(`/api/detail/${event_address}`);
 }
+
+
+
+function swap() {
+  api.get('/api/session').then(
+      session => api.get(`/api/swap?user_did=${session.data.user.did}`).then( res=>{
+        console.log(res.data.id);
+        const url = `http://localhost:8807/swap/${res.data.id}`;
+        window.location.href = url}),
+
+      fail => window.location.href = '/?openLogin=true')
+  }
+
 
 export default function EventDetailPage() {
   const params = qs.parse(window.location.search.slice(1));
@@ -73,6 +87,16 @@ export default function EventDetailPage() {
             </Typography>
           </CardContent>
           <CardActions>
+            {/*<Button*/}
+            {/*    component="a"*/}
+            {/*    onClick={() => swap()}>*/}
+            {/*  Reload Money*/}
+            {/*</Button>*/}
+             <Button
+                component="a"
+                onClick={() => swap()}>
+              Reload Money
+            </Button>
             <Button
               component="a"
               onClick={() => toggle()}
