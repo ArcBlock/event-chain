@@ -19,7 +19,7 @@ create_env:
 	@pip install virtualenvwrapper
 	( \
 		source /usr/local/bin/virtualenvwrapper.sh; \
-		mkvirtualenv forge-env; \
+		mkvirtualenv forge-env -p python3; \
 		pip install -r requirements.txt; \
 	)
 
