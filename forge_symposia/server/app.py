@@ -1,23 +1,18 @@
 import logging
 
-import requests
 from eve import Eve
+import requests
+from eve_sqlalchemy import SQL
+from eve_sqlalchemy.validation import ValidatorSQL
 from flask import g, jsonify, make_response, request
 from flask_jwt_extended import (JWTManager, get_jwt_identity, jwt_required)
-from flask_sqlalchemy import SQLAlchemy
 from forge_sdk import did as forge_did, protos as forge_protos
 
 from forge_symposia.server import controllers
 from forge_symposia.server import env
 from forge_symposia.server import utils
 from forge_symposia.server.forge import forge
-
-from eve_sqlalchemy.validation import ValidatorSQL
-from eve_sqlalchemy import SQL
 from forge_symposia.server.models import Base, init_db
-import pathlib
-import os
-
 
 app = Eve(validator=ValidatorSQL, data=SQL)
 jwt = JWTManager(app)
@@ -39,6 +34,7 @@ def register_blueprints(application):
 def before_request():
     g.logger = logging.getLogger('app')
     g.logger.setLevel(level=logging.DEBUG)
+
 
 @app.route("/api/session", methods=['GET', 'POST'])
 @jwt_required
@@ -99,11 +95,28 @@ def user(address):
 
 @app.route("/api/list_tickets/<user_address>", methods=['GET'])
 def list_tickets(user_address):
-    user_address=user_address.lstrip(forge_did.PREFIX)
+    user_address = user_address.lstrip(forge_did.PREFIX)
     tickets = controllers.list_user_tickets(user_address)
-    res= utils.chunks(tickets, 3)
+    res = utils.chunks(tickets, 3)
     return jsonify(res)
 
+
+@app.route("/api/swap/", methods=["GET"])
+def swap():
+    user_did = request.args.get('user_did')
+    if not user_did:
+        return jsonify(error='Please provide user did')
+    token_amount = request.args.get('token_amount', 30000000000000000)
+
+    url = "http://localhost:8807/api/swap"
+    payload = {'userDid': user_did.split(":")[-1],
+               'offerToken': int(token_amount),
+               'demandToken': int(token_amount)}
+    res = requests.post(url, json=payload)
+    # check res
+    id = res.json().get('response').get('id')
+    print(id)
+    return jsonify(id=id)
 
 sql_db = init_db(app)
 

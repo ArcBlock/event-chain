@@ -1,4 +1,4 @@
-# Forge Python Starter
+# EventChain
 
 ## Requirements
 
@@ -11,7 +11,7 @@
 ### 1. Install dependencies
 
 ``` bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 cd forge_symposia && yarn install
 ```
 

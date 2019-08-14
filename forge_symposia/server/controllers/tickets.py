@@ -7,8 +7,10 @@ from forge_symposia.server import utils
 
 
 def list_user_tickets(user_address):
-    assets = requests.get(utils.server_url('/events?where={"owner":"' +user_address+'"}')).json().get('_items')
-    tickets = [lib.get_ticket_state(a.get('address')) for a in assets if _is_general_ticket(a.get('address'))]
+    # assets = requests.get(utils.server_url('/events?where={"owner":"' +user_address+'"}')).json().get('_items')
+    # tickets = [lib.get_ticket_state(a.get('address')) for a in assets if _is_general_ticket(a.get('address'))]
+    assets = forge.rpc.list_assets(owner_address=user_address).assets
+    tickets = [lib.get_ticket_state(asset.address) for asset in assets]
 
     return [vars(ticket) for ticket in tickets]
 

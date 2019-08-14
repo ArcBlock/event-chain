@@ -2,7 +2,11 @@ import json
 import os
 
 from forge_sdk import ForgeConn, did, mcrypto, protos, utils
+import os.path
+from dotenv import find_dotenv, load_dotenv
+
 import logging
+load_dotenv(find_dotenv('./forge_symposia/.env', True))
 
 logger = logging.getLogger('deploy-script')
 
@@ -10,8 +14,9 @@ m_sk = os.environ.get('MODERATOR_SK')
 m_pk = os.environ.get('MODERATOR_PK')
 
 m_address='z11N3R6GZrNingR11Dub9EbVMJGgyZTJGMQB'
-
-forge = ForgeConn('127.0.0.1:27210')
+forge_grpc = os.environ.get('FORGE_SOCK_GRPC')
+logger.warn(f"grpc:{forge_grpc}")
+forge = ForgeConn(os.environ.get('FORGE_SOCK_GRPC'))
 input = os.path.join(os.path.dirname(__file__), 'event_chain/event_chain/event_chain.itx.json')
 
 def delcare_moderator():
@@ -43,9 +48,9 @@ def deploy(m_wallet):
         res=forge.rpc.send_itx(tx=itx, wallet=m_wallet, type_url='fg:t:deploy_protocol',
                                nonce=0)
         if res.code == 0:
-            logger.info("event_chain tx deployed.")
+            logger.info("Success: event_chain tx deployed.")
         else:
-            logger.error("fail to deploy event_chain tx.")
+            logger.error("Fail: Error in deploying event_chain tx.")
             logger.error(res)
 
 if __name__=="__main__":

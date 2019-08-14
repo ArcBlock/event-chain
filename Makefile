@@ -6,73 +6,29 @@ VERSION=$(strip $(shell cat version))
 PYTHON_TARGET=event_chain/protos
 CONFIGS=forge forge_release forge_test forge_default
 
-build:
-	@echo "Building the software..."
-
-init:
-	@echo "Initializing the repo..."
+dep:
+	@echo "Install dependencies required for this repo..."
 	@pip install -r requirements.txt
 	@cd forge_symposia && yarn install
+
+init: deploy-protocols simulate
+	@echo "Repo initialized and ready to go!"
 
 create_env:
 	@pip install virtualenv
 	@pip install virtualenvwrapper
 	( \
 		source /usr/local/bin/virtualenvwrapper.sh; \
-		mkvirtualenv forge-python-sdk; \
+		mkvirtualenv forge-env; \
 		pip install -r requirements.txt; \
 	)
-
-add_precommit_hook:
-	@pre-commit install
-
-travis-init: add_precommit_hook
-	@echo "Initialize software required for travis (normally ubuntu software)"
-
-install:
-	@echo "Install software required for this repo..."
-	@pip install -r requirements.txt
-
-dep:
-	@echo "Install dependencies required for this repo..."
-
-pre-build: install dep
-	@echo "Running scripts before the build..."
-
-post-build:
-	@echo "Running scripts after the build is done..."
-
-all: pre-build build post-build
-
-test:
-	@echo "Running test suites..."
-
-lint:
-	@echo "Linting the software..."
-	@python .git/hooks/pre-commit
-
-doc:
-	@echo "Building the documenation..."
-
-precommit: dep lint doc build test
-
-travis: precommit
-
-travis-deploy: release
-	@echo "Deploy the software by travis"
-
-clean:
-	@echo "Cleaning the build..."
 
 watch:
 	@make build
 	@echo "Watching templates and slides changes..."
 	@fswatch -o src/ | xargs -n1 -I{} make build
 
-run:
-	@echo "Running the software..."
-
-check-style:
+lint:
 	@flake8 event_chain/application test
 
 build-all-protos:
@@ -102,15 +58,15 @@ upload-pypi:
 pypi: package-pypi upload-pypi clean-pypi-build
 
 simulate:
-	@export PYTHONPATH=. && python3.6 forge_symposia/server/simulation/simulate.py
+	@export PYTHONPATH=. && python forge_symposia/server/simulation/simulate.py
 
 deploy-protocols:
-	@export PYTHONPATH=. && python3.6 protocols/deploy.py
+	@export PYTHONPATH=. && python protocols/deploy.py
 
-start-server:
-	@export PYTHONPATH=. && python3.6 forge_symposia/server/app.py
+run-server:
+	@export PYTHONPATH=. && python forge_symposia/server/app.py
 
-start-client:
+run-client:
 	@cd forge_symposia && yarn start:client
 
 
