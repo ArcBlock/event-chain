@@ -30,9 +30,7 @@ async function fetchEventDetail(event_address) {
 function swap() {
   api.get('/api/session').then(
       session => api.get(`/api/swap?user_did=${session.data.user.did}`).then( res=>{
-        console.log(res.data.id);
-        const url = `http://localhost:8807/swap/${res.data.id}`;
-        window.location.href = url}),
+        window.location.href = res.data.redirect}),
 
       fail => window.location.href = '/?openLogin=true')
   }

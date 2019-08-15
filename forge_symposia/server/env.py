@@ -16,6 +16,7 @@ APP_ADDR = os.getenv('REACT_APP_APP_ID')
 
 INDEX_DB = os.path.join(forge.config.path, "index", "index.sqlite3")
 APP_DB = os.path.join(os.path.dirname(forge.config.path), "ec_app/app.db")
+FORGE_SWAP_API = f'{os.getenv("FORGE_SWAP")}/api/swap'
 
 pathlib.Path(APP_DB).parent.mkdir(parents=True, exist_ok=True)
 

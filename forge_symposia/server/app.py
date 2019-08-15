@@ -108,15 +108,12 @@ def swap():
         return jsonify(error='Please provide user did')
     token_amount = request.args.get('token_amount', 30000000000000000)
 
-    url = "http://localhost:8807/api/swap"
     payload = {'userDid': user_did.split(":")[-1],
                'offerToken': int(token_amount),
                'demandToken': int(token_amount)}
-    res = requests.post(url, json=payload)
-    # check res
-    id = res.json().get('response').get('id')
-    print(id)
-    return jsonify(id=id)
+    res = requests.post(env.FORGE_SWAP_API, json=payload)
+    redirect = res.json().get('response').get('redirect')
+    return jsonify(redirect=redirect)
 
 sql_db = init_db(app)
 
