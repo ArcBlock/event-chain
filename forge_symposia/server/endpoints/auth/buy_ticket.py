@@ -15,6 +15,7 @@ def get_handler(**args):
     event_address = args.get('request').args.get('event_address')
 
     pk = forge_utils.multibase_b58decode(args.get('user_pk'))
+
     acquire_asset_tx, _ = forge.rpc.build_acquire_asset_tx(
             to=event_address,
             spec_datas=[{"id": str(uuid.uuid4())}],
@@ -41,7 +42,7 @@ def post_handler(**args):
     token = args.get('token')
     tx = wallet_res.get_origin_tx()
     tx.signature = wallet_res.get_signature()
-    parsed_tx=forge_utils.parse_to_proto(tx.itx.value,
+    parsed_tx = forge_utils.parse_to_proto(tx.itx.value,
                                forge_protos.AcquireAssetTx)
     ticket_address = parsed_tx.specs[0].address
 

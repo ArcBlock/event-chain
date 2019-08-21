@@ -1,5 +1,6 @@
 import logging
 import secrets
+import urllib.parse
 
 from flask import Blueprint
 from flask import jsonify, request
@@ -80,9 +81,9 @@ def get_token(endpoint, event_address):
     default = utils.server_url(f'/api/did/{endpoint}/auth?_t_={token}')
 
     url = forge_utils.did_url(
-            url=default if not event_address else utils.server_url(
+            url=default if not event_address else urllib.parse.quote(utils.server_url(
                 f'/api/did/{endpoint}/auth'
-                f'?_t_={token}&event_address={event_address}'),
+                f'?_t_={token}&event_address={event_address}')),
             action='requestAuth',
             app_pk=forge_utils.multibase_b58encode(env.APP_PK),
             app_addr=env.APP_ADDR)
