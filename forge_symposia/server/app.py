@@ -1,7 +1,7 @@
 import logging
 
-from eve import Eve
 import requests
+from eve import Eve
 from eve_sqlalchemy import SQL
 from eve_sqlalchemy.validation import ValidatorSQL
 from flask import g, jsonify, make_response, request
@@ -14,7 +14,17 @@ from forge_symposia.server import utils
 from forge_symposia.server.forge import forge
 from forge_symposia.server.models import Base, init_db
 
-app = Eve(validator=ValidatorSQL, data=SQL)
+my_settings = {
+    'JWT_SECRET_KEY': 'python-starter-secret-key',
+    'SQLALCHEMY_DATABASE_URI': 'sqlite:///' + env.INDEX_DB,
+    'SQLALCHEMY_BINDS': {
+        'app_db': "sqlite:///" + env.APP_DB
+    },
+    'DOMAIN': {'hello': {}}
+
+}
+
+app = Eve(settings=my_settings, validator=ValidatorSQL, data=SQL)
 jwt = JWTManager(app)
 forge_rpc = forge.rpc
 db = app.data.driver
